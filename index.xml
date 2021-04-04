@@ -5,7 +5,18 @@
     <link>https://gilhooleyd.github.io/</link>
     <description>Recent content on Gilhooley</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://gilhooleyd.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 Apr 2021 14:29:57 -0400</lastBuildDate><atom:link href="https://gilhooleyd.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Yield Considered Unhelpful</title>
+      <link>https://gilhooleyd.github.io/posts/yield-considered-unhelpful/</link>
+      <pubDate>Sun, 04 Apr 2021 14:29:57 -0400</pubDate>
+      
+      <guid>https://gilhooleyd.github.io/posts/yield-considered-unhelpful/</guid>
+      <description>I had the idea for this post after reading Linus&amp;rsquo;s take on the yield syscall. It&amp;rsquo;s worth a read if you haven&amp;rsquo;t seen it, although I will be summarizing his points. I also think that the take missed a larger conversation about the APIs that a platform gives its users, and how that shapes correct user behavior.
+What is &amp;lsquo;yield&amp;rsquo;? The function in question is sched_yield. It is a very simple function that &amp;lsquo;yields&amp;rsquo; the remainder of your thread&amp;rsquo;s time back to the scheduler.</description>
+    </item>
+    
     <item>
       <title>About Me</title>
       <link>https://gilhooleyd.github.io/about/</link>
