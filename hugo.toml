@@ -1,3 +1,14 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://gilhooleyd.github.io/'
 languageCode = 'en-us'
-title = 'My New Hugo Site'
+title = "Gilhooley"
+theme = "paper"
+
+[menu]
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 10
+
+[markup.highlight]
+  style = "monokailight"
