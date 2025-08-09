@@ -1,0 +1,232 @@
+<!doctype html>
+
+
+
+
+
+
+
+<html
+  class="not-ready lg:text-base"
+  style="--bg:#faf8f1"
+  lang="en-us"
+  dir="ltr"
+><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  />
+
+  
+  <title>Yield Considered Unhelpful - Gilhooley</title>
+
+  
+  <meta name="theme-color" />
+
+  <meta name="description" content="I had the idea for this post after reading
+Linus&rsquo;s take on the  yield syscall.
+It&rsquo;s worth a read if you haven&rsquo;t seen it, although I will be summarizing his points.
+I also think that the take missed a larger conversation about the APIs that a platform gives its users,
+and how that shapes correct user behavior.
+What is &lsquo;yield&rsquo;?
+The function in question is sched_yield. It is a very simple function
+that &lsquo;yields&rsquo; the remainder of your thread&rsquo;s time back to the scheduler. In modern operating systems we have
+&ldquo;preemptive scheduling&rdquo;, which means that the scheduler will interrupt, or preempt, your thread when a certain
+amount of time has passed. The scheduler preempts threads so that all of threads in the system can get a turn
+to make progress. Preemption stops a CPU-intensive thread from hogging all of the resources in your system." />
+  <meta name="author" content="Gilhooley" /><link rel="preload stylesheet" as="style" href="http://localhost:1313/main.min.css" />
+
+  
+  <link rel="preload" as="image" href="http://localhost:1313/theme.png" />
+
+  
+
+  
+
+  <script
+    defer
+    src="http://localhost:1313/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad();"
+  ></script>
+
+  
+  <link
+    rel="icon"
+    href="http://localhost:1313/favicon.ico"
+  />
+  <link
+    rel="apple-touch-icon"
+    href="http://localhost:1313/apple-touch-icon.png"
+  />
+
+  <meta name="generator" content="Hugo 0.148.2">
+</head>
+<body
+    class="bg-(--bg) text-black antialiased duration-200 ease-out [-webkit-tap-highlight-color:transparent] dark:text-white"
+  ><header
+  class="mx-auto flex h-[4.5rem] max-w-(--w) px-8 whitespace-nowrap lg:justify-center"
+>
+  <div class="relative z-50 flex items-center ltr:mr-auto rtl:ml-auto">
+    <a
+      class="-translate-y-[1px] text-2xl font-medium"
+      href="http://localhost:1313/"
+      >Gilhooley</a
+    >
+    <div
+      class="btn-dark text-[0px] ltr:ml-4 rtl:mr-4 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.png)_left_center/_auto_theme('spacing.6')_no-repeat] [transition:_background-position_0.4s_steps(5)] dark:[background-position:right]"
+      role="button"
+      aria-label="Dark"
+    ></div>
+  </div>
+
+  <div
+    class="btn-menu relative z-50 flex h-[4.5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden ltr:-mr-8 rtl:-ml-8"
+    role="button"
+    aria-label="Menu"
+  ></div>
+
+  <script>
+    
+    const htmlClass = document.documentElement.classList;
+    setTimeout(() => {
+      htmlClass.remove('not-ready');
+    }, 10);
+
+    
+    const btnMenu = document.querySelector('.btn-menu');
+    btnMenu.addEventListener('click', () => {
+      htmlClass.toggle('open');
+    });
+
+    
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    const lightBg = '#faf8f1'.replace(/"/g, '');
+    const setDark = (isDark) => {
+      metaTheme.setAttribute('content', isDark ? '#000' : lightBg);
+      htmlClass[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark);
+    };
+
+    
+    const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    if (htmlClass.contains('dark')) {
+      setDark(true);
+    } else {
+      const darkVal = localStorage.getItem('dark');
+      setDark(darkVal ? darkVal === 'true' : darkScheme.matches);
+    }
+
+    
+    darkScheme.addEventListener('change', (event) => {
+      setDark(event.matches);
+    });
+
+    
+    const btnDark = document.querySelector('.btn-dark');
+    btnDark.addEventListener('click', () => {
+      setDark(localStorage.getItem('dark') !== 'true');
+    });
+  </script>
+
+  <div
+    class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full flex-col justify-center bg-(--bg) pb-16 duration-200 select-none lg:static lg:h-auto lg:flex-row lg:bg-transparent! lg:pb-0 lg:transition-none"
+  ><nav
+      class="lg:ml-12 lg:flex lg:flex-row lg:items-center lg:space-x-10 rtl:space-x-reverse"
+    ><a
+        class="block text-center text-xl leading-[5rem] lg:text-base lg:font-normal"
+        href="/about/"
+        >About</a
+      ></nav>
+  </div>
+</header>
+<main
+      class="prose prose-neutral dark:prose-invert relative mx-auto min-h-[calc(100vh-9rem)] max-w-(--w) px-8 pt-14 pb-16"
+    ><article>
+  <header class="mb-14">
+    <h1 class="my-0! pb-2.5">Yield Considered Unhelpful</h1><div class="text-xs antialiased opacity-60"><time>Apr 4, 2021</time></div></header>
+
+  <section><p>I had the idea for this post after reading
+<a href="https://www.realworldtech.com/forum/?threadid=189711&amp;curpostid=189752">Linus&rsquo;s take on the  yield syscall</a>.
+It&rsquo;s worth a read if you haven&rsquo;t seen it, although I will be summarizing his points.
+I also think that the take missed a larger conversation about the APIs that a platform gives its users,
+and how that shapes correct user behavior.</p>
+<h2 id="what-is-yield">What is &lsquo;yield&rsquo;?</h2>
+<p>The function in question is <a href="https://linux.die.net/man/2/sched_yield">sched_yield</a>. It is a very simple function
+that &lsquo;yields&rsquo; the remainder of your thread&rsquo;s time back to the scheduler. In modern operating systems we have
+&ldquo;preemptive scheduling&rdquo;, which means that the scheduler will interrupt, or preempt, your thread when a certain
+amount of time has passed. The scheduler preempts threads so that all of threads in the system can get a turn
+to make progress. Preemption stops a CPU-intensive thread from hogging all of the resources in your system.</p>
+<p><code>yield</code> is a relic from a non-preemptive scheduler world where threads had to be &rsquo;nice&rsquo; and let the scheduler
+know when they are done. A thread that calls <code>yield</code> is basically saying &ldquo;I&rsquo;m good, there&rsquo;s no more work for
+me to do right now. Put me in the back of the list and let all the other threads have a turn on the CPU&rdquo;.
+If the scheduler can&rsquo;t interrupt, or preempt, a thread then calling <code>yield</code> is the only way that the thread
+can return control to the scheduler. In modern OSes, schedulers only gives the thread a certain amount of
+time before the scheduler steps in and takes control back. Modern schedulers don&rsquo;t rely on threads calling
+<code>yield</code> anymore.</p>
+<h2 id="why-is-yield-unhelpful">Why is yield unhelpful?</h2>
+<p>Yield is unhelpful because it doesn&rsquo;t give the scheduler enough information to do its job correctly.</p>
+<p>In a modern OS there should be no legitimate reason to call yield. If your thread is &lsquo;waiting&rsquo; for something
+to happen, then it should <strong>block</strong> on that thing happening. If your thread is extremely CPU-intensive then it
+should <strong>trust</strong> that the scheduler will preempt you and give you and the rest of the system the correct priorities.</p>
+<p>Yield is essentially saying &ldquo;Put me to sleep for a random amount of time&rdquo;, because your thread is being moved
+to the back of the scheduler&rsquo;s run-queue. Does being put to sleep for a random amount of time sound like
+useful or understandable behavior? You will not be able to get consistent or replicable performance results
+if you have <code>yields</code> all over your program.</p>
+<h3 id="but-im-spin-waiting-for-something-and-i-dont-want-to-block-the-cpu">But I&rsquo;m spin-waiting for something and I don&rsquo;t want to block the CPU.</h3>
+<p>I don&rsquo;t really believe that user-space code should use a spin-lock. I think that using a
+<a href="https://en.wikipedia.org/wiki/Futex">fast userspace mutex, or futex</a> will probably give you better performance
+characteristics (Futex&rsquo;s don&rsquo;t have to enter the kernel in the &ldquo;common case&rdquo; of the lock being uncontested).</p>
+<p>That aside, if you&rsquo;re convinced that you need a spinlock &ldquo;for performance&rdquo;, then why are you yielding? The
+scheduler prevents you from hogging all of the resources, so spin away on that lock until you get preempted.
+If you check once and then yield, chances are that you will miss what you&rsquo;re waiting for while the
+scheduler is running other threads. Given that the Linux scheduler&rsquo;s timeslice is 100ms, in the worst case
+you will be late to your event by 100ms * the number of runnable threads on your CPU.</p>
+<p>If you&rsquo;re spin-waiting in userspace, the kernel can&rsquo;t help you because the kernel doesn&rsquo;t know what you&rsquo;re
+doing. The kernel&rsquo;s job is to help you, you should let it! If you use a futex, the kernel knows what you&rsquo;re
+blocked on. The kernel will know immediately when your resource is free again, and if you&rsquo;re high enough
+priority you might be run immediately after your resource is free. This shortens the worst-case scheduling
+scenario tremendously and it should also give you <strong>predictable</strong> timing.</p>
+<h3 id="but-im-cpu-intensive-and-other-things-might-be-more-important">But I&rsquo;m CPU intensive and other things might be more important.</h3>
+<p>This is the example that Linus gave:</p>
+<blockquote>
+<p>You&rsquo;ll find various random GUI programs doing that because they are threaded, and one thread does things
+like update the screen, while another thread does calculations. The calculation loop (which is still important,
+just not latency-critical) might have &ldquo;sched_yield() in it as a cheap way of saying
+&ldquo;maybe there&rsquo;s a more important UI event going on&rdquo;.</p></blockquote>
+<p>I agree that many systems have been built like this, and doing this might be the simplest way to get a system
+off the ground. However, this is not a predictable or understandable system. The problem with this approach is
+that decisions about scheduling are being made at the wrong level.</p>
+<p>As a process, you should <strong>trust</strong> the scheduler. If you are being run, you should trust that you are the highest
+priority thing being run, and you should do your work. Please don&rsquo;t try and &ldquo;guess&rdquo; at the schedulers job, because
+you don&rsquo;t have any of the information that the scheduler has. You don&rsquo;t know how much load the system is under.
+You don&rsquo;t know what priorities the other threads have. You don&rsquo;t know who else is runnable at this exact moment.
+The scheduler has all of this information! And the scheduler chose you to have the CPU! Please don&rsquo;t hand the
+CPU back if you have work that you can do.</p>
+<h2 id="in-conclusion">In conclusion.</h2>
+<ul>
+<li>Think of <code>yield</code> as saying &ldquo;I would like to sleep for a random amount of time&rdquo;.</li>
+<li>Please don&rsquo;t use <code>yield</code> in your code to be &rsquo;nice&rsquo;. Trust the scheduler.</li>
+<li>Please let the kernel know what you&rsquo;re waiting on by using a <code>futex</code> or other kernel primitive. Help the kernel help you.</li>
+</ul>
+</section>
+
+  </article></main><footer
+  class="mx-auto flex h-[4.5rem] max-w-(--w) items-center px-8 text-xs tracking-wider uppercase opacity-60"
+>
+  <div class="mr-auto">&copy;2025
+    <a class="link" href="http://localhost:1313/">Gilhooley</a></div>
+  <a class="link mx-6" href="https://gohugo.io/" rel="noopener" target="_blank"
+    >powered by hugo️️</a
+  >️
+  <a
+    class="link"
+    href="https://github.com/nanxiaobei/hugo-paper"
+    rel="noopener"
+    target="_blank"
+    >hugo-paper</a
+  >
+</footer>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Gilhooley</title>
+    <link>http://localhost:1313/posts/</link>
+    <description>Recent content in Posts on Gilhooley</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 Apr 2021 14:29:57 -0400</lastBuildDate>
+    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Yield Considered Unhelpful</title>
+      <link>http://localhost:1313/posts/yield-considered-unhelpful/</link>
+      <pubDate>Sun, 04 Apr 2021 14:29:57 -0400</pubDate>
+      <guid>http://localhost:1313/posts/yield-considered-unhelpful/</guid>
+      <description>&lt;p&gt;I had the idea for this post after reading&#xA;&lt;a href=&#34;https://www.realworldtech.com/forum/?threadid=189711&amp;amp;curpostid=189752&#34;&gt;Linus&amp;rsquo;s take on the  yield syscall&lt;/a&gt;.&#xA;It&amp;rsquo;s worth a read if you haven&amp;rsquo;t seen it, although I will be summarizing his points.&#xA;I also think that the take missed a larger conversation about the APIs that a platform gives its users,&#xA;and how that shapes correct user behavior.&lt;/p&gt;&#xA;&lt;h2 id=&#34;what-is-yield&#34;&gt;What is &amp;lsquo;yield&amp;rsquo;?&lt;/h2&gt;&#xA;&lt;p&gt;The function in question is &lt;a href=&#34;https://linux.die.net/man/2/sched_yield&#34;&gt;sched_yield&lt;/a&gt;. It is a very simple function&#xA;that &amp;lsquo;yields&amp;rsquo; the remainder of your thread&amp;rsquo;s time back to the scheduler. In modern operating systems we have&#xA;&amp;ldquo;preemptive scheduling&amp;rdquo;, which means that the scheduler will interrupt, or preempt, your thread when a certain&#xA;amount of time has passed. The scheduler preempts threads so that all of threads in the system can get a turn&#xA;to make progress. Preemption stops a CPU-intensive thread from hogging all of the resources in your system.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
