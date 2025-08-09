@@ -11,7 +11,7 @@
   style="--bg:#faf8f1"
   lang="en-us"
   dir="ltr"
-><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+><head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta
@@ -36,10 +36,10 @@ that &lsquo;yields&rsquo; the remainder of your thread&rsquo;s time back to the 
 &ldquo;preemptive scheduling&rdquo;, which means that the scheduler will interrupt, or preempt, your thread when a certain
 amount of time has passed. The scheduler preempts threads so that all of threads in the system can get a turn
 to make progress. Preemption stops a CPU-intensive thread from hogging all of the resources in your system." />
-  <meta name="author" content="Gilhooley" /><link rel="preload stylesheet" as="style" href="http://localhost:1313/main.min.css" />
+  <meta name="author" content="Gilhooley" /><link rel="preload stylesheet" as="style" href="https://gilhooleyd.github.io/main.min.css" />
 
   
-  <link rel="preload" as="image" href="http://localhost:1313/theme.png" />
+  <link rel="preload" as="image" href="https://gilhooleyd.github.io/theme.png" />
 
   
 
@@ -47,21 +47,43 @@ to make progress. Preemption stops a CPU-intensive thread from hogging all of th
 
   <script
     defer
-    src="http://localhost:1313/highlight.min.js"
+    src="https://gilhooleyd.github.io/highlight.min.js"
     onload="hljs.initHighlightingOnLoad();"
   ></script>
 
   
   <link
     rel="icon"
-    href="http://localhost:1313/favicon.ico"
+    href="https://gilhooleyd.github.io/favicon.ico"
   />
   <link
     rel="apple-touch-icon"
-    href="http://localhost:1313/apple-touch-icon.png"
+    href="https://gilhooleyd.github.io/apple-touch-icon.png"
   />
 
   <meta name="generator" content="Hugo 0.148.2">
+  <meta itemprop="name" content="Yield Considered Unhelpful">
+  <meta itemprop="description" content="I had the idea for this post after reading Linus’s take on the yield syscall. It’s worth a read if you haven’t seen it, although I will be summarizing his points. I also think that the take missed a larger conversation about the APIs that a platform gives its users, and how that shapes correct user behavior.
+What is ‘yield’? The function in question is sched_yield. It is a very simple function that ‘yields’ the remainder of your thread’s time back to the scheduler. In modern operating systems we have “preemptive scheduling”, which means that the scheduler will interrupt, or preempt, your thread when a certain amount of time has passed. The scheduler preempts threads so that all of threads in the system can get a turn to make progress. Preemption stops a CPU-intensive thread from hogging all of the resources in your system.">
+  <meta itemprop="datePublished" content="2021-04-04T14:29:57-04:00">
+  <meta itemprop="dateModified" content="2021-04-04T14:29:57-04:00">
+  <meta itemprop="wordCount" content="927"><meta property="og:url" content="https://gilhooleyd.github.io/posts/yield-considered-unhelpful/">
+  <meta property="og:site_name" content="Gilhooley">
+  <meta property="og:title" content="Yield Considered Unhelpful">
+  <meta property="og:description" content="I had the idea for this post after reading Linus’s take on the yield syscall. It’s worth a read if you haven’t seen it, although I will be summarizing his points. I also think that the take missed a larger conversation about the APIs that a platform gives its users, and how that shapes correct user behavior.
+What is ‘yield’? The function in question is sched_yield. It is a very simple function that ‘yields’ the remainder of your thread’s time back to the scheduler. In modern operating systems we have “preemptive scheduling”, which means that the scheduler will interrupt, or preempt, your thread when a certain amount of time has passed. The scheduler preempts threads so that all of threads in the system can get a turn to make progress. Preemption stops a CPU-intensive thread from hogging all of the resources in your system.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2021-04-04T14:29:57-04:00">
+    <meta property="article:modified_time" content="2021-04-04T14:29:57-04:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Yield Considered Unhelpful">
+  <meta name="twitter:description" content="I had the idea for this post after reading Linus’s take on the yield syscall. It’s worth a read if you haven’t seen it, although I will be summarizing his points. I also think that the take missed a larger conversation about the APIs that a platform gives its users, and how that shapes correct user behavior.
+What is ‘yield’? The function in question is sched_yield. It is a very simple function that ‘yields’ the remainder of your thread’s time back to the scheduler. In modern operating systems we have “preemptive scheduling”, which means that the scheduler will interrupt, or preempt, your thread when a certain amount of time has passed. The scheduler preempts threads so that all of threads in the system can get a turn to make progress. Preemption stops a CPU-intensive thread from hogging all of the resources in your system.">
+
+  <link rel="canonical" href="https://gilhooleyd.github.io/posts/yield-considered-unhelpful/" />
 </head>
 <body
     class="bg-(--bg) text-black antialiased duration-200 ease-out [-webkit-tap-highlight-color:transparent] dark:text-white"
@@ -71,7 +93,7 @@ to make progress. Preemption stops a CPU-intensive thread from hogging all of th
   <div class="relative z-50 flex items-center ltr:mr-auto rtl:ml-auto">
     <a
       class="-translate-y-[1px] text-2xl font-medium"
-      href="http://localhost:1313/"
+      href="https://gilhooleyd.github.io/"
       >Gilhooley</a
     >
     <div
@@ -216,7 +238,7 @@ CPU back if you have work that you can do.</p>
   class="mx-auto flex h-[4.5rem] max-w-(--w) items-center px-8 text-xs tracking-wider uppercase opacity-60"
 >
   <div class="mr-auto">&copy;2025
-    <a class="link" href="http://localhost:1313/">Gilhooley</a></div>
+    <a class="link" href="https://gilhooleyd.github.io/">Gilhooley</a></div>
   <a class="link mx-6" href="https://gohugo.io/" rel="noopener" target="_blank"
     >powered by hugo️️</a
   >️
