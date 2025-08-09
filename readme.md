@@ -7,3 +7,8 @@ Run the code with:
 ```
 hugo serve -D
 ```
+
+Publish with:
+```
+hugo build -d docs
+```
