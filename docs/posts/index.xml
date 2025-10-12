@@ -6,8 +6,22 @@
     <description>Recent content in Posts on Gilhooley</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 04 Apr 2021 14:29:57 -0400</lastBuildDate>
+    <lastBuildDate>Sun, 12 Oct 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://gilhooleyd.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Making our own dynamic types</title>
+      <link>https://gilhooleyd.github.io/posts/making-our-own-dynamic-types/</link>
+      <pubDate>Sun, 12 Oct 2025 00:00:00 +0000</pubDate>
+      <guid>https://gilhooleyd.github.io/posts/making-our-own-dynamic-types/</guid>
+      <description>&lt;p&gt;Types are very helpful in expressing your intent and enforcing constraints. They require you to think more closely about the problem. Changing your types are a sign that callers and callees need to be updated and this can be enforced by the compiler instead of at runtime.&lt;/p&gt;&#xA;&lt;p&gt;Types are a useful tool for thinking about a problem. Often we can think in terms of the data that we need and that we should output, and the shape of the function we need becomes clear.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>We have pipe at home</title>
+      <link>https://gilhooleyd.github.io/posts/we-have-pipe-at-home/</link>
+      <pubDate>Sat, 11 Oct 2025 00:00:00 +0000</pubDate>
+      <guid>https://gilhooleyd.github.io/posts/we-have-pipe-at-home/</guid>
+      <description>&lt;p&gt;I haven&amp;rsquo;t written any code in gleam but I&amp;rsquo;ve liked what I&amp;rsquo;ve seen about the language. It has a very functional programming orientation and a syntax that feels similar to Rust code. It compiles to the Erlang Virtual Machine, and it also compiles to javascript, meaning it can be used in a variety of useful environments.&lt;/p&gt;&#xA;&lt;p&gt;One of gleam&amp;rsquo;s killer features that I see mentioned is is the pipeline operator &lt;code&gt;|&amp;gt;&lt;/code&gt;. This operator takes the left hand side and passes it as an argument to the right hand side.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Yield Considered Unhelpful</title>
       <link>https://gilhooleyd.github.io/posts/yield-considered-unhelpful/</link>

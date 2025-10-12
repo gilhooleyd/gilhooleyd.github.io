@@ -1,0 +1,297 @@
+<!doctype html>
+
+
+
+
+
+
+
+<html
+  class="not-ready lg:text-base"
+  style="--bg:#faf8f1"
+  lang="en-us"
+  dir="ltr"
+><head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  />
+
+  
+  <title>We have pipe at home - Gilhooley</title>
+
+  
+  <meta name="theme-color" />
+
+  <meta name="description" content="I haven&rsquo;t written any code in gleam but I&rsquo;ve liked what I&rsquo;ve seen about the language. It has a very functional programming orientation and a syntax that feels similar to Rust code. It compiles to the Erlang Virtual Machine, and it also compiles to javascript, meaning it can be used in a variety of useful environments.
+One of gleam&rsquo;s killer features that I see mentioned is is the pipeline operator |&gt;. This operator takes the left hand side and passes it as an argument to the right hand side." />
+  <meta name="author" content="Gilhooley" /><link rel="preload stylesheet" as="style" href="https://gilhooleyd.github.io/main.min.css" />
+
+  
+  <link rel="preload" as="image" href="https://gilhooleyd.github.io/theme.png" />
+
+  
+
+  
+
+  <script
+    defer
+    src="https://gilhooleyd.github.io/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad();"
+  ></script>
+
+  
+  <link
+    rel="icon"
+    href="https://gilhooleyd.github.io/favicon.ico"
+  />
+  <link
+    rel="apple-touch-icon"
+    href="https://gilhooleyd.github.io/apple-touch-icon.png"
+  />
+
+  <meta name="generator" content="Hugo 0.148.2">
+  <meta itemprop="name" content="We have pipe at home">
+  <meta itemprop="description" content="I haven’t written any code in gleam but I’ve liked what I’ve seen about the language. It has a very functional programming orientation and a syntax that feels similar to Rust code. It compiles to the Erlang Virtual Machine, and it also compiles to javascript, meaning it can be used in a variety of useful environments.
+One of gleam’s killer features that I see mentioned is is the pipeline operator |&gt;. This operator takes the left hand side and passes it as an argument to the right hand side.">
+  <meta itemprop="datePublished" content="2025-10-11T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2025-10-11T00:00:00+00:00">
+  <meta itemprop="wordCount" content="981"><meta property="og:url" content="https://gilhooleyd.github.io/posts/we-have-pipe-at-home/">
+  <meta property="og:site_name" content="Gilhooley">
+  <meta property="og:title" content="We have pipe at home">
+  <meta property="og:description" content="I haven’t written any code in gleam but I’ve liked what I’ve seen about the language. It has a very functional programming orientation and a syntax that feels similar to Rust code. It compiles to the Erlang Virtual Machine, and it also compiles to javascript, meaning it can be used in a variety of useful environments.
+One of gleam’s killer features that I see mentioned is is the pipeline operator |&gt;. This operator takes the left hand side and passes it as an argument to the right hand side.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-10-11T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-10-11T00:00:00+00:00">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="We have pipe at home">
+  <meta name="twitter:description" content="I haven’t written any code in gleam but I’ve liked what I’ve seen about the language. It has a very functional programming orientation and a syntax that feels similar to Rust code. It compiles to the Erlang Virtual Machine, and it also compiles to javascript, meaning it can be used in a variety of useful environments.
+One of gleam’s killer features that I see mentioned is is the pipeline operator |&gt;. This operator takes the left hand side and passes it as an argument to the right hand side.">
+
+  <link rel="canonical" href="https://gilhooleyd.github.io/posts/we-have-pipe-at-home/" />
+</head>
+<body
+    class="bg-(--bg) text-black antialiased duration-200 ease-out [-webkit-tap-highlight-color:transparent] dark:text-white"
+  ><header
+  class="mx-auto flex h-[4.5rem] max-w-(--w) px-8 whitespace-nowrap lg:justify-center"
+>
+  <div class="relative z-50 flex items-center ltr:mr-auto rtl:ml-auto">
+    <a
+      class="-translate-y-[1px] text-2xl font-medium"
+      href="https://gilhooleyd.github.io/"
+      >Gilhooley</a
+    >
+    <div
+      class="btn-dark text-[0px] ltr:ml-4 rtl:mr-4 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.png)_left_center/_auto_theme('spacing.6')_no-repeat] [transition:_background-position_0.4s_steps(5)] dark:[background-position:right]"
+      role="button"
+      aria-label="Dark"
+    ></div>
+  </div>
+
+  <div
+    class="btn-menu relative z-50 flex h-[4.5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden ltr:-mr-8 rtl:-ml-8"
+    role="button"
+    aria-label="Menu"
+  ></div>
+
+  <script>
+    
+    const htmlClass = document.documentElement.classList;
+    setTimeout(() => {
+      htmlClass.remove('not-ready');
+    }, 10);
+
+    
+    const btnMenu = document.querySelector('.btn-menu');
+    btnMenu.addEventListener('click', () => {
+      htmlClass.toggle('open');
+    });
+
+    
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    const lightBg = '#faf8f1'.replace(/"/g, '');
+    const setDark = (isDark) => {
+      metaTheme.setAttribute('content', isDark ? '#000' : lightBg);
+      htmlClass[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark);
+    };
+
+    
+    const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    if (htmlClass.contains('dark')) {
+      setDark(true);
+    } else {
+      const darkVal = localStorage.getItem('dark');
+      setDark(darkVal ? darkVal === 'true' : darkScheme.matches);
+    }
+
+    
+    darkScheme.addEventListener('change', (event) => {
+      setDark(event.matches);
+    });
+
+    
+    const btnDark = document.querySelector('.btn-dark');
+    btnDark.addEventListener('click', () => {
+      setDark(localStorage.getItem('dark') !== 'true');
+    });
+  </script>
+
+  <div
+    class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full flex-col justify-center bg-(--bg) pb-16 duration-200 select-none lg:static lg:h-auto lg:flex-row lg:bg-transparent! lg:pb-0 lg:transition-none"
+  ><nav
+      class="lg:ml-12 lg:flex lg:flex-row lg:items-center lg:space-x-10 rtl:space-x-reverse"
+    ><a
+        class="block text-center text-xl leading-[5rem] lg:text-base lg:font-normal"
+        href="/about/"
+        >About</a
+      ></nav>
+  </div>
+</header>
+<main
+      class="prose prose-neutral dark:prose-invert relative mx-auto min-h-[calc(100vh-9rem)] max-w-(--w) px-8 pt-14 pb-16"
+    ><article>
+  <header class="mb-14">
+    <h1 class="my-0! pb-2.5">We have pipe at home</h1><div class="text-xs antialiased opacity-60"><time>Oct 11, 2025</time></div></header>
+
+  <section><p>I haven&rsquo;t written any code in gleam but I&rsquo;ve liked what I&rsquo;ve seen about the language. It has a very functional programming orientation and a syntax that feels similar to Rust code. It compiles to the Erlang Virtual Machine, and it also compiles to javascript, meaning it can be used in a variety of useful environments.</p>
+<p>One of gleam&rsquo;s killer features that I see mentioned is is the pipeline operator <code>|&gt;</code>. This operator takes the left hand side and passes it as an argument to the right hand side.</p>
+<p>Here is an <a href="https://tour.gleam.run/everything/#functions-pipelines">example from Beam&rsquo;s website</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">//</span> <span style="color:#111">With</span> <span style="color:#111">the</span> <span style="color:#111">pipe</span> <span style="color:#111">operator</span>
+</span></span><span style="display:flex;"><span><span style="color:#d88200">&#34;Hello, Mike!&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">|&gt;</span> <span style="color:#111">string</span><span style="color:#f92672">.</span><span style="color:#111">drop_end</span><span style="color:#111">(</span><span style="color:#ae81ff">1</span><span style="color:#111">)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">|&gt;</span> <span style="color:#111">string</span><span style="color:#f92672">.</span><span style="color:#111">drop_start</span><span style="color:#111">(</span><span style="color:#ae81ff">7</span><span style="color:#111">)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">|&gt;</span> <span style="color:#111">io</span><span style="color:#f92672">.</span><span style="color:#111">println</span>
+</span></span></code></pre></div><p>A way that this would be written without the pipeline operator and without class methods would look like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#111">io</span><span style="color:#f92672">.</span><span style="color:#111">println</span><span style="color:#111">(</span><span style="color:#111">string</span><span style="color:#f92672">.</span><span style="color:#111">drop_start</span><span style="color:#111">(</span><span style="color:#111">string</span><span style="color:#f92672">.</span><span style="color:#111">drop_end</span><span style="color:#111">(</span><span style="color:#d88200">&#34;Hello, Mike!&#34;</span><span style="color:#111">,</span> <span style="color:#ae81ff">1</span><span style="color:#111">),</span> <span style="color:#ae81ff">7</span><span style="color:#111">));</span>
+</span></span></code></pre></div><p>You can see that this line is much harder to read. The functions have to be read from right-to-left, and the arguments have to be read by &ldquo;ping-ponging&rdquo; your eyes from the left side of the line back to the right.</p>
+<p>Why is pipelining nice? Can we have pipelining in other languages? Continue reading to find out!</p>
+<h1 id="in-fix-vs-pre-fix-notation">In-fix vs Pre-fix notation</h1>
+<p>I believe these terms originally came from mathematics, and I only first heard about them when I started looking closer at functional programming. The terms are simple to understand.</p>
+<ul>
+<li>Infix - The operator is placed between or &ldquo;in the middle&rdquo; of two operands
+<ul>
+<li>Example: <code>2 + 2</code></li>
+</ul>
+</li>
+<li>Prefix - The operator is placed before the operands
+<ul>
+<li>Example: <code>cos(0)</code></li>
+</ul>
+</li>
+</ul>
+<p>Infix operators are normally &ldquo;binary operators&rdquo; meaning they accept two arguments. This makes sense, as there&rsquo;s not a sensible place to put a third or fourth argument.
+Generally when you chain infix operators you read the operations left-to-right, although math operators comes with their own precedence rules (PEMDAS) to make things more complicated.</p>
+<p>Prefix operators can accept any amount of arguments which make them more flexible. LISP languages consider prefix operators superior and generally don&rsquo;t have support for infix operators without using lambdas.</p>
+<p>One major problem with prefix operators is they are read &ldquo;in-to-out&rdquo;, which involves the &ldquo;ping ponging&rdquo; that we saw in the above example. Here&rsquo;s a math example using prefix notation:</p>
+<pre tabindex="0"><code>(- (+ 5 (- 4 3) 2) 1)
+</code></pre><p>Here&rsquo;s the same example using infix notation:</p>
+<pre tabindex="0"><code>5 + 4 - 3 + 2 - 1
+</code></pre><p>For my eyes the infix notation is much easier to read, as it&rsquo;s read left-to-right without backtracking.</p>
+<h1 id="method-calls-as-infix-notation">Method calls as infix notation</h1>
+<p>It&rsquo;s interesting to think that a method call is a form of infix notation. The call</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#111">class</span><span style="color:#f92672">.</span><span style="color:#111">function</span><span style="color:#111">(</span><span style="color:#111">arg1</span><span style="color:#111">,</span> <span style="color:#111">arg2</span><span style="color:#111">)</span>
+</span></span></code></pre></div><p>Can be thought of as the infix version of:</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#111">function</span><span style="color:#111">(</span><span style="color:#111">class</span><span style="color:#111">,</span> <span style="color:#111">arg1</span><span style="color:#111">,</span> <span style="color:#111">arg2</span><span style="color:#111">)</span>
+</span></span></code></pre></div><p>The &ldquo;builder pattern&rdquo; is one example where the functions return the modified class, which allows the developer to chain methods together. This is one form of pipelining that folks might be familiar with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#111">my_object</span><span style="color:#f92672">.</span><span style="color:#111">set_a</span><span style="color:#111">(</span><span style="color:#ae81ff">1</span><span style="color:#111">)</span><span style="color:#f92672">.</span><span style="color:#111">set_b</span><span style="color:#111">(</span><span style="color:#ae81ff">2</span><span style="color:#111">)</span><span style="color:#f92672">.</span><span style="color:#111">set_c</span><span style="color:#111">(</span><span style="color:#ae81ff">3</span><span style="color:#111">)</span><span style="color:#f92672">.</span><span style="color:#111">build</span><span style="color:#111">()</span>
+</span></span></code></pre></div><p>Compare this with the prefix notation version:</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#111">build</span><span style="color:#111">(</span><span style="color:#111">set_c</span><span style="color:#111">(</span><span style="color:#111">set_b</span><span style="color:#111">(</span><span style="color:#111">set_a</span><span style="color:#111">(</span><span style="color:#111">my_object</span><span style="color:#111">,</span> <span style="color:#ae81ff">1</span><span style="color:#111">),</span> <span style="color:#ae81ff">2</span><span style="color:#111">),</span> <span style="color:#ae81ff">3</span><span style="color:#111">))</span>
+</span></span></code></pre></div><p>I don&rsquo;t think anyone would be writing the prefix notation, the ping-ponging really hurts the readability.</p>
+<p>Using functions for infix notation gets us &ldquo;close&rdquo; to Gleam&rsquo;s syntax but it&rsquo;s less expressive. It requires:</p>
+<ol>
+<li>All functions return the class that you want to operate on</li>
+<li>All functions that you want to call are method functions
+Certainly (2) is difficult. Someone is not adding method functions directly to <code>List</code> in python, and so the amount that you&rsquo;re able to pipeline is limited.</li>
+</ol>
+<p>However, higher order functions come to our rescue!</p>
+<h1 id="we-have-pipe-at-home-python">We have pipe at home: python</h1>
+<p>All we need to do to &ldquo;replicate&rdquo; the pipe functionality is to write something that takes in data and a list of functions, and applies the data to the functions one after the other. We can write this simply in python with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#00a8c8">def</span> <span style="color:#75af00">pipe</span><span style="color:#111">(</span><span style="color:#111">data</span><span style="color:#111">,</span> <span style="color:#f92672">*</span><span style="color:#111">fns</span><span style="color:#111">):</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#00a8c8">for</span> <span style="color:#111">f</span> <span style="color:#f92672">in</span> <span style="color:#111">fns</span><span style="color:#111">:</span>
+</span></span><span style="display:flex;"><span>	  <span style="color:#111">data</span> <span style="color:#f92672">=</span> <span style="color:#111">f</span><span style="color:#111">(</span><span style="color:#111">data</span><span style="color:#111">)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#00a8c8">return</span> <span style="color:#111">data</span>
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Example</span>
+</span></span><span style="display:flex;"><span><span style="color:#00a8c8">def</span> <span style="color:#75af00">add2</span><span style="color:#111">(</span><span style="color:#111">num</span><span style="color:#111">):</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#00a8c8">return</span> <span style="color:#111">num</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Should print &#39;5&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#111">pipe</span><span style="color:#111">(</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#111">add2</span><span style="color:#111">,</span> <span style="color:#111">add2</span><span style="color:#111">,</span> <span style="color:#111">print</span><span style="color:#111">)</span>
+</span></span></code></pre></div><p>The main limitation to pipe is that each function can only accept a single argument, which is that data that is being passed to it. In order to make functions with a single argument, we will either need to create <code>llambda</code> functions or use <code>partial</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> <span style="color:#111">functools</span> <span style="color:#f92672">import</span> <span style="color:#111">partial</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Should print &#39;5&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#111">pipe</span><span style="color:#111">(</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#111">partial</span><span style="color:#111">(</span><span style="color:#111">add</span><span style="color:#111">(</span><span style="color:#ae81ff">2</span><span style="color:#111">)),</span> <span style="color:#00a8c8">lambda</span> <span style="color:#111">a</span><span style="color:#111">:</span> <span style="color:#111">a</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span><span style="color:#111">,</span> <span style="color:#111">print</span><span style="color:#111">)</span>
+</span></span></code></pre></div><p>We can write the original gleam example in this way (although we need some help because python doesn&rsquo;t have a slice function):</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#00a8c8">def</span> <span style="color:#75af00">slice</span><span style="color:#111">(</span><span style="color:#111">start</span><span style="color:#f92672">=</span><span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#111">end</span><span style="color:#f92672">=</span><span style="color:#111">s</span><span style="color:#f92672">.</span><span style="color:#111">len</span><span style="color:#111">,</span> <span style="color:#111">count_by</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1</span><span style="color:#111">,</span> <span style="color:#111">s</span><span style="color:#111">):</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#00a8c8">return</span> <span style="color:#111">s</span><span style="color:#111">[</span><span style="color:#111">start</span><span style="color:#111">:</span><span style="color:#111">end</span><span style="color:#111">:</span><span style="color:#111">count_by</span><span style="color:#111">]</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#111">pipe</span><span style="color:#111">(</span><span style="color:#d88200">&#34;Hello, Mike!&#34;</span><span style="color:#111">,</span> <span style="color:#111">partial</span><span style="color:#111">(</span><span style="color:#111">slice</span><span style="color:#111">(</span><span style="color:#ae81ff">0</span><span style="color:#111">,</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#111">)),</span> <span style="color:#111">partial</span><span style="color:#111">(</span><span style="color:#111">slice</span><span style="color:#111">(</span><span style="color:#ae81ff">7</span><span style="color:#111">)),</span> <span style="color:#111">print</span><span style="color:#111">)</span>
+</span></span></code></pre></div><p>Although since python makes slicing strings very easy I think everyone would agree that the above example is much worse than:</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#111">print</span><span style="color:#111">(</span><span style="color:#d88200">&#34;Hello, Mike!&#34;</span><span style="color:#111">[</span><span style="color:#ae81ff">7</span><span style="color:#111">:</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#111">])</span>
+</span></span></code></pre></div><h1 id="a-more-complicated-example-day-1-advent-of-code">A more complicated example: Day 1 Advent of Code</h1>
+<p>The <a href="https://adventofcode.com/2024/day/1">2024 Advent of Code day 1</a> challenge involves takes as input lines with 2 numbers:</p>
+<pre tabindex="0"><code>3   4
+4   3
+2   5
+1   3
+3   9
+3   3
+</code></pre><p>The task is to collect the left and right columns, sort each column, and then add up the &lsquo;distances&rsquo; between each value in each column.</p>
+<p>We need one more function in order to write our solution and that is <code>ipipe</code> which is like pipe except it operates on iterators:</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#00a8c8">def</span> <span style="color:#75af00">ipipe</span><span style="color:#111">(</span><span style="color:#111">iter</span><span style="color:#111">,</span> <span style="color:#f92672">*</span><span style="color:#111">fns</span><span style="color:#111">):</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#00a8c8">for</span> <span style="color:#111">f</span> <span style="color:#f92672">in</span> <span style="color:#111">fns</span><span style="color:#111">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#111">iter</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span><span style="color:#111">(</span><span style="color:#111">f</span><span style="color:#111">,</span> <span style="color:#111">iter</span><span style="color:#111">)</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#00a8c8">return</span> <span style="color:#111">iter</span>
+</span></span></code></pre></div><p>We also need a
+Now, to solve the problem we first open and parse the input</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># This </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># - takes the string</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># - opens it as a file</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># - reads the file as a string</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># - splits the string by whitespace (returns a list)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># - calls `int()` on each string in the array</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># - calls `list()` on the iterator (returns a list)</span>
+</span></span><span style="display:flex;"><span><span style="color:#111">ints</span> <span style="color:#f92672">=</span> <span style="color:#111">pipe</span><span style="color:#111">(</span><span style="color:#d88200">&#34;day1&#34;</span><span style="color:#111">,</span> <span style="color:#111">open</span><span style="color:#111">,</span> <span style="color:#111">call</span><span style="color:#111">(</span><span style="color:#d88200">&#34;read&#34;</span><span style="color:#111">),</span> <span style="color:#111">call</span><span style="color:#111">(</span><span style="color:#d88200">&#34;split&#34;</span><span style="color:#111">),</span> <span style="color:#111">ipipe</span><span style="color:#111">(</span><span style="color:#111">int</span><span style="color:#111">),</span> <span style="color:#111">list</span><span style="color:#111">)</span>
+</span></span></code></pre></div><p>We then collect our left and right columns and sort them:</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#111">left</span> <span style="color:#f92672">=</span> <span style="color:#111">sorted</span><span style="color:#111">(</span><span style="color:#111">ints</span><span style="color:#111">[</span><span style="color:#ae81ff">0</span><span style="color:#111">::</span><span style="color:#ae81ff">2</span><span style="color:#111">])</span>
+</span></span><span style="display:flex;"><span><span style="color:#111">right</span> <span style="color:#f92672">=</span> <span style="color:#111">sorted</span><span style="color:#111">(</span><span style="color:#111">ints</span><span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#111">::</span><span style="color:#ae81ff">2</span><span style="color:#111">])</span>
+</span></span></code></pre></div><p>Then we calculate the distance between the columns and print it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#00a8c8">def</span> <span style="color:#75af00">distance</span><span style="color:#111">(</span><span style="color:#111">v</span><span style="color:#111">):</span> <span style="color:#00a8c8">return</span> <span style="color:#111">abs</span><span style="color:#111">(</span><span style="color:#111">v</span><span style="color:#111">[</span><span style="color:#ae81ff">0</span><span style="color:#111">]</span> <span style="color:#f92672">-</span> <span style="color:#111">v</span><span style="color:#111">[</span><span style="color:#ae81ff">1</span><span style="color:#111">])</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#111">pipe</span><span style="color:#111">(</span><span style="color:#111">zip</span><span style="color:#111">(</span><span style="color:#111">left</span><span style="color:#111">,</span> <span style="color:#111">right</span><span style="color:#111">),</span> <span style="color:#111">imap</span><span style="color:#111">(</span><span style="color:#111">distance</span><span style="color:#111">),</span> <span style="color:#111">sum</span><span style="color:#111">,</span> <span style="color:#111">print</span><span style="color:#111">)</span>
+</span></span></code></pre></div></section>
+
+  <nav
+    class="mt-24 flex overflow-hidden rounded-xl bg-black/[3%] text-lg leading-[1.2]! *:flex *:w-1/2 *:items-center *:p-5 *:font-medium *:no-underline dark:bg-white/[8%] [&>*:hover]:bg-black/[2%] dark:[&>*:hover]:bg-white/[3%]"
+  ><a class="ltr:pr-3 rtl:pl-3" href="https://gilhooleyd.github.io/posts/making-our-own-dynamic-types/"
+      ><span class="ltr:mr-1.5 rtl:ml-1.5">←</span><span>Making our own dynamic types</span></a
+    ><a
+      class="justify-end pl-3 ltr:ml-auto rtl:mr-auto"
+      href="https://gilhooleyd.github.io/posts/yield-considered-unhelpful/"
+      ><span>Yield Considered Unhelpful</span><span class="ltr:ml-1.5 rtl:mr-1.5">→</span></a
+    ></nav></article></main><footer
+  class="mx-auto flex h-[4.5rem] max-w-(--w) items-center px-8 text-xs tracking-wider uppercase opacity-60"
+>
+  <div class="mr-auto">&copy;2025
+    <a class="link" href="https://gilhooleyd.github.io/">Gilhooley</a></div>
+  <a class="link mx-6" href="https://gohugo.io/" rel="noopener" target="_blank"
+    >powered by hugo️️</a
+  >️
+  <a
+    class="link"
+    href="https://github.com/nanxiaobei/hugo-paper"
+    rel="noopener"
+    target="_blank"
+    >hugo-paper</a
+  >
+</footer>
+</body>
+</html>
