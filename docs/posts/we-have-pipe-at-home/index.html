@@ -58,7 +58,7 @@ One of gleam&rsquo;s killer features that I see mentioned is is the pipeline ope
 One of gleam’s killer features that I see mentioned is is the pipeline operator |&gt;. This operator takes the left hand side and passes it as an argument to the right hand side.">
   <meta itemprop="datePublished" content="2025-10-11T00:00:00+00:00">
   <meta itemprop="dateModified" content="2025-10-11T00:00:00+00:00">
-  <meta itemprop="wordCount" content="981"><meta property="og:url" content="https://gilhooleyd.github.io/posts/we-have-pipe-at-home/">
+  <meta itemprop="wordCount" content="977"><meta property="og:url" content="https://gilhooleyd.github.io/posts/we-have-pipe-at-home/">
   <meta property="og:site_name" content="Gilhooley">
   <meta property="og:title" content="We have pipe at home">
   <meta property="og:description" content="I haven’t written any code in gleam but I’ve liked what I’ve seen about the language. It has a very functional programming orientation and a syntax that feels similar to Rust code. It compiles to the Erlang Virtual Machine, and it also compiles to javascript, meaning it can be used in a variety of useful environments.
@@ -250,8 +250,7 @@ Certainly (2) is difficult. Someone is not adding method functions directly to <
 </span></span><span style="display:flex;"><span>  <span style="color:#00a8c8">for</span> <span style="color:#111">f</span> <span style="color:#f92672">in</span> <span style="color:#111">fns</span><span style="color:#111">:</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#111">iter</span> <span style="color:#f92672">=</span> <span style="color:#111">map</span><span style="color:#111">(</span><span style="color:#111">f</span><span style="color:#111">,</span> <span style="color:#111">iter</span><span style="color:#111">)</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#00a8c8">return</span> <span style="color:#111">iter</span>
-</span></span></code></pre></div><p>We also need a
-Now, to solve the problem we first open and parse the input</p>
+</span></span></code></pre></div><p>Now, to solve the problem we first open and parse the input</p>
 <div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># This </span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># - takes the string</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># - opens it as a file</span>

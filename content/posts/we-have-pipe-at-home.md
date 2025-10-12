@@ -136,7 +136,6 @@ def ipipe(iter, *fns):
   return iter
 ```
 
-We also need a 
 Now, to solve the problem we first open and parse the input
 ```python
 # This 
