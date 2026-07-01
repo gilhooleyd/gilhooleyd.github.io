@@ -1,0 +1,7 @@
+{
+  // The base URL where the blog is hosted (needed for RSS)
+  baseURL: "https://gilhooleyd.github.io/",
+
+  // The main title of the blog
+  siteTitle: "Gilhooley",
+}

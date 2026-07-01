@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yield Considered Unhelpful</title>
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../prism.css">
+    <link rel="stylesheet" href="../style.css">
+  </head>
+  <body>
+    <header>
+      <a
+        href="../index.html"
+        style="font-weight: bold; font-size: 1.2rem; color: inherit"
+      >Gilhooley</a>
+      <nav>
+        <a href="../about.html" style="margin-left: 15px">About</a>
+      </nav>
+    </header>
+    <main>
+      <h1>Yield Considered Unhelpful</h1> <div class="post-meta">2021-04-14</div> <p>I had the idea for this post after reading <a href="https://www.realworldtech.com/forum/?threadid=189711&amp;curpostid=189752">Linus&#039;s take on the yield syscall</a>. It&#039;s worth a read if you haven&#039;t seen it, although I will be summarizing his points. I also think that the take missed a larger conversation about the APIs that a platform gives its users, and how that shapes correct user behavior.</p>
+<h2>What is &#039;yield&#039;?</h2>
+<p>The function in question is <a href="https://linux.die.net/man/2/sched</em>yield">sched<em>yield</a>. It is a very simple function that &#039;yields&#039; the remainder of your thread&#039;s time back to the scheduler. In modern operating systems we have &quot;preemptive scheduling&quot;, which means that the scheduler will interrupt, or preempt, your thread when a certain amount of time has passed. The scheduler preempts threads so that all of threads in the system can get a turn to make progress. Preemption stops a CPU-intensive thread from hogging all of the resources in your system.</p>
+<p><code>yield</code> is a relic from a non-preemptive scheduler world where threads had to be &#039;nice&#039; and let the scheduler know when they are done. A thread that calls <code>yield</code> is basically saying &quot;I&#039;m good, there&#039;s no more work for me to do right now. Put me in the back of the list and let all the other threads have a turn on the CPU&quot;. If the scheduler can&#039;t interrupt, or preempt, a thread then calling <code>yield</code> is the only way that the thread can return control to the scheduler. In modern OSes, schedulers only gives the thread a certain amount of time before the scheduler steps in and takes control back. Modern schedulers don&#039;t rely on threads calling <code>yield</code> anymore.</p>
+<h2>Why is yield unhelpful?</h2>
+<p>Yield is unhelpful because it doesn&#039;t give the scheduler enough information to do its job correctly.</p>
+<p>In a modern OS there should be no legitimate reason to call yield. If your thread is &#039;waiting&#039; for something to happen, then it should <strong>block</strong> on that thing happening. If your thread is extremely CPU-intensive then it should <strong>trust</strong> that the scheduler will preempt you and give you and the rest of the system the correct priorities.</p>
+<p>Yield is essentially saying &quot;Put me to sleep for a random amount of time&quot;, because your thread is being moved to the back of the scheduler&#039;s run-queue. Does being put to sleep for a random amount of time sound like useful or understandable behavior? You will not be able to get consistent or replicable performance results if you have <code>yields</code> all over your program.</p>
+<h3>But I&#039;m spin-waiting for something and I don&#039;t want to block the CPU.</h3>
+<p>I don&#039;t really believe that user-space code should use a spin-lock. I think that using a <a href="https://en.wikipedia.org/wiki/Futex">fast userspace mutex, or futex</a> will probably give you better performance characteristics (Futex&#039;s don&#039;t have to enter the kernel in the &quot;common case&quot; of the lock being uncontested).</p>
+<p>That aside, if you&#039;re convinced that you need a spinlock &quot;for performance&quot;, then why are you yielding? The scheduler prevents you from hogging all of the resources, so spin away on that lock until you get preempted. If you check once and then yield, chances are that you will miss what you&#039;re waiting for while the scheduler is running other threads. Given that the Linux scheduler&#039;s timeslice is 100ms, in the worst case you will be late to your event by 100ms * the number of runnable threads on your CPU.</p>
+<p>If you&#039;re spin-waiting in userspace, the kernel can&#039;t help you because the kernel doesn&#039;t know what you&#039;re doing. The kernel&#039;s job is to help you, you should let it! If you use a futex, the kernel knows what you&#039;re blocked on. The kernel will know immediately when your resource is free again, and if you&#039;re high enough priority you might be run immediately after your resource is free. This shortens the worst-case scheduling scenario tremendously and it should also give you <strong>predictable</strong> timing.</p>
+<h3>But I&#039;m CPU intensive and other things might be more important.</h3>
+<p>This is the example that Linus gave:</p>
+<p>&gt; You&#039;ll find various random GUI programs doing that because they are threaded, &gt; and one thread does things like update the screen, while another thread does &gt; calculations. The calculation loop (which is still important, just not &gt; latency-critical) might have &quot;sched_yield() in it as a cheap way of saying &gt; &quot;maybe there&#039;s a more important UI event going on&quot;.</p>
+<p>I agree that many systems have been built like this, and doing this might be the simplest way to get a system off the ground. However, this is not a predictable or understandable system. The problem with this approach is that decisions about scheduling are being made at the wrong level.</p>
+<p>As a process, you should <strong>trust</strong> the scheduler. If you are being run, you should trust that you are the highest priority thing being run, and you should do your work. Please don&#039;t try and &quot;guess&quot; at the schedulers job, because you don&#039;t have any of the information that the scheduler has. You don&#039;t know how much load the system is under. You don&#039;t know what priorities the other threads have. You don&#039;t know who else is runnable at this exact moment. The scheduler has all of this information! And the scheduler chose you to have the CPU! Please don&#039;t hand the CPU back if you have work that you can do.</p>
+<h2>In conclusion.</h2>
+<ul>
+<li>Think of <code>yield</code> as saying &quot;I would like to sleep for a random amount of</li>
+<p>  time&quot;.</p>
+<li>Please don&#039;t use <code>yield</code> in your code to be &#039;nice&#039;. Trust the scheduler.</li>
+<li>Please let the kernel know what you&#039;re waiting on by using a <code>futex</code> or other</li>
+<p>  kernel primitive. Help the kernel help you.</p>
+</ul>
+
+    </main>
+    <footer>
+      <p>&copy; 2026 Gilhooley.</p>
+    </footer>
+
+    <script src="../prism.js"></script>
+    
+  </body>
+</html>

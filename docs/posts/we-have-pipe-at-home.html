@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>We have pipe at home</title>
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../prism.css">
+    <link rel="stylesheet" href="../style.css">
+  </head>
+  <body>
+    <header>
+      <a
+        href="../index.html"
+        style="font-weight: bold; font-size: 1.2rem; color: inherit"
+      >Gilhooley</a>
+      <nav>
+        <a href="../about.html" style="margin-left: 15px">About</a>
+      </nav>
+    </header>
+    <main>
+      <h1>We have pipe at home</h1> <div class="post-meta">2025-10-11</div> <p>I haven&#039;t written any code in gleam but I&#039;ve liked what I&#039;ve seen about the language. It has a very functional programming orientation and a syntax that feels similar to Rust code. It compiles to the Erlang Virtual Machine, and it also compiles to javascript, meaning it can be used in a variety of useful environments.</p>
+<p>One of gleam&#039;s killer features that I see mentioned is is the pipeline operator <code>|&gt;</code>. This operator takes the left hand side and passes it as an argument to the right hand side.</p>
+<p>Here is an <a href="https://tour.gleam.run/everything/#functions-pipelines">example from Beam&#039;s website</a>:</p>
+<pre><code class="language-python">// With the pipe operator
+&quot;Hello, Mike!&quot;
+  |&gt; string.drop_end(1)
+  |&gt; string.drop_start(7)
+  |&gt; io.println</code></pre>
+<p>A way that this would be written without the pipeline operator and without class methods would look like:</p>
+<pre><code class="language-python">io.println(string.drop_start(string.drop_end(&quot;Hello, Mike!&quot;, 1), 7));</code></pre>
+<p>You can see that this line is much harder to read. The functions have to be read from right-to-left, and the arguments have to be read by &quot;ping-ponging&quot; your eyes from the left side of the line back to the right.</p>
+<p>Why is pipelining nice? Can we have pipelining in other languages? Continue reading to find out!</p>
+<h1>In-fix vs Pre-fix notation</h1>
+<p>I believe these terms originally came from mathematics, and I only first heard about them when I started looking closer at functional programming. The terms are simple to understand.</p>
+<ul>
+<li>Infix - The operator is placed between or &quot;in the middle&quot; of two operands</li>
+<p>  - Example: <code>2 + 2</code></p>
+<li>Prefix - The operator is placed before the operands</li>
+<p>  - Example: <code>cos(0)</code></p>
+</ul>
+<p>Infix operators are normally &quot;binary operators&quot; meaning they accept two arguments. This makes sense, as there&#039;s not a sensible place to put a third or fourth argument. Generally when you chain infix operators you read the operations left-to-right, although math operators comes with their own precedence rules (PEMDAS) to make things more complicated.</p>
+<p>Prefix operators can accept any amount of arguments which make them more flexible. LISP languages consider prefix operators superior and generally don&#039;t have support for infix operators without using lambdas.</p>
+<p>One major problem with prefix operators is they are read &quot;in-to-out&quot;, which involves the &quot;ping ponging&quot; that we saw in the above example. Here&#039;s a math example using prefix notation:</p>
+<pre><code class="language-">(- (+ 5 (- 4 3) 2) 1)</code></pre>
+<p>Here&#039;s the same example using infix notation:</p>
+<pre><code class="language-">5 + 4 - 3 + 2 - 1</code></pre>
+<p>For my eyes the infix notation is much easier to read, as it&#039;s read left-to-right without backtracking.</p>
+<h1>Method calls as infix notation</h1>
+<p>It&#039;s interesting to think that a method call is a form of infix notation. The call</p>
+<pre><code class="language-python">class.function(arg1, arg2)</code></pre>
+<p>Can be thought of as the infix version of:</p>
+<pre><code class="language-python">function(class, arg1, arg2)</code></pre>
+<p>The &quot;builder pattern&quot; is one example where the functions return the modified class, which allows the developer to chain methods together. This is one form of pipelining that folks might be familiar with:</p>
+<pre><code class="language-python">my_object.set_a(1).set_b(2).set_c(3).build()</code></pre>
+<p>Compare this with the prefix notation version:</p>
+<pre><code class="language-python">build(set_c(set_b(set_a(my_object, 1), 2), 3))</code></pre>
+<p>I don&#039;t think anyone would be writing the prefix notation, the ping-ponging really hurts the readability.</p>
+<p>Using functions for infix notation gets us &quot;close&quot; to Gleam&#039;s syntax but it&#039;s less expressive. It requires:</p>
+<p>1. All functions return the class that you want to operate on 2. All functions that you want to call are method functions Certainly (2) is    difficult. Someone is not adding method functions directly to <code>List</code> in    python, and so the amount that you&#039;re able to pipeline is limited.</p>
+<p>However, higher order functions come to our rescue!</p>
+<h1>We have pipe at home: python</h1>
+<p>All we need to do to &quot;replicate&quot; the pipe functionality is to write something that takes in data and a list of functions, and applies the data to the functions one after the other. We can write this simply in python with:</p>
+<pre><code class="language-python">def pipe(data, *fns):
+	for f in fns:
+	  data = f(data)
+	return data
+	
+# Example
+def add2(num):
+  return num + 2
+
+# Should print &#039;5&#039;
+pipe(1, add2, add2, print)</code></pre>
+<p>The main limitation to pipe is that each function can only accept a single argument, which is that data that is being passed to it. In order to make functions with a single argument, we will either need to create <code>llambda</code> functions or use <code>partial</code></p>
+<pre><code class="language-python">from functools import partial
+
+# Should print &#039;5&#039;
+pipe(1, partial(add(2)), lambda a: a + 2, print)</code></pre>
+<p>We can write the original gleam example in this way (although we need some help because python doesn&#039;t have a slice function):</p>
+<pre><code class="language-python">def slice(start=0, end=s.len, count_by=1, s):
+  return s[start:end:count_by]
+  
+pipe(&quot;Hello, Mike!&quot;, partial(slice(0, -1)), partial(slice(7)), print)</code></pre>
+<p>Although since python makes slicing strings very easy I think everyone would agree that the above example is much worse than:</p>
+<pre><code class="language-python">print(&quot;Hello, Mike!&quot;[7:-1])</code></pre>
+<h1>A more complicated example: Day 1 Advent of Code</h1>
+<p>The <a href="https://adventofcode.com/2024/day/1">2024 Advent of Code day 1</a> challenge involves takes as input lines with 2 numbers:</p>
+<pre><code class="language-">3   4
+4   3
+2   5
+1   3
+3   9
+3   3</code></pre>
+<p>The task is to collect the left and right columns, sort each column, and then add up the &#039;distances&#039; between each value in each column.</p>
+<p>We need one more function in order to write our solution and that is <code>ipipe</code> which is like pipe except it operates on iterators:</p>
+<pre><code class="language-python">def ipipe(iter, *fns):
+  for f in fns:
+    iter = map(f, iter)
+  return iter</code></pre>
+<p>Now, to solve the problem we first open and parse the input</p>
+<pre><code class="language-python"># This 
+# - takes the string
+# - opens it as a file
+# - reads the file as a string
+# - splits the string by whitespace (returns a list)
+# - calls `int()` on each string in the array
+# - calls `list()` on the iterator (returns a list)
+ints = pipe(&quot;day1&quot;, open, call(&quot;read&quot;), call(&quot;split&quot;), ipipe(int), list)</code></pre>
+<p>We then collect our left and right columns and sort them:</p>
+<pre><code class="language-python">left = sorted(ints[0::2])
+right = sorted(ints[1::2])</code></pre>
+<p>Then we calculate the distance between the columns and print it:</p>
+<pre><code class="language-python">def distance(v): return abs(v[0] - v[1])
+
+pipe(zip(left, right), imap(distance), sum, print)</code></pre>
+
+    </main>
+    <footer>
+      <p>&copy; 2026 Gilhooley.</p>
+    </footer>
+
+    <script src="../prism.js"></script>
+    
+  </body>
+</html>

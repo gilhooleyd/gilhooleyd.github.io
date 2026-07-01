@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "serve": "deno run --allow-write --allow-read --allow-net ssg/main.js serve --port 8002",
+    "fmt": "deno fmt ssg content"
+  }
+}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Making our own dynamic types</title>
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../prism.css">
+    <link rel="stylesheet" href="../style.css">
+  </head>
+  <body>
+    <header>
+      <a
+        href="../index.html"
+        style="font-weight: bold; font-size: 1.2rem; color: inherit"
+      >Gilhooley</a>
+      <nav>
+        <a href="../about.html" style="margin-left: 15px">About</a>
+      </nav>
+    </header>
+    <main>
+      <h1>Making our own dynamic types</h1> <div class="post-meta">2025-10-12</div> <p>Types are very helpful in expressing your intent and enforcing constraints. They require you to think more closely about the problem. Changing your types are a sign that callers and callees need to be updated and this can be enforced by the compiler instead of at runtime.</p>
+<p>Types are a useful tool for thinking about a problem. Often we can think in terms of the data that we need and that we should output, and the shape of the function we need becomes clear.</p>
+<p>However, dynamic typing has a lot of benefits as well. One often touted benefit is that you don&#039;t need to think as much before you start writing code. Another is that the code you write is &quot;more generic&quot;, it tends to be able to operate on lots of similarly &quot;shaped&quot; objects. Adding typing often requires a lot of boilerplate in order to get the types to align, especially in C++ and Rust where typing is strict.</p>
+<p>I&#039;ve been thinking recently about the bridge between strongly typed and dynamically typed languages. Writing in Python is a joy and writing in Rust can be a slog even though Rust is a much better designed language. Is it possible to reclaim some of the dynamic typing fun in Rust?</p>
+<p>Let&#039;s start with the value type:</p>
+<pre><code class="language-rust">enum Type {
+  Void,
+  Int(i64),
+  Float(f64),
+  String(String),
+  Vector(Vec&lt;Type&gt;),
+  Dict(HashMap&lt;Type, Type&gt;),
+}</code></pre>
+<p>Look at that! It already feels like we&#039;re most of the way to dynamic typing.</p>
+<p>What about first class support for functions? Here&#039;s where we need to make some design decisions. All dynamically typed functions will have to take in and return the same type, so the most generic thing we can do is:</p>
+<pre><code class="language-rust">struct TypeFn {
+  function: Rc&lt;dyn Fn(Type) -&gt; Type&gt;,
+}
+
+enum Type {
+  Fn(TypeFn)
+}</code></pre>
+<p>This means that all of our functions take in and return a single <code>Type</code> object. If we want a function that accepts or returns multiple values the object can be <code>Type::Vector</code>.</p>
+<p>Here is where we start to see a specific degrade in ergonomics because functions no longer name their input or output parameters. Every dynamically typed language has the ability to name input parameters since it helps so much for usability.</p>
+<pre><code class="language-rust">// Good, can see what is happening.
+fn my_foo(a: int, b: int) -&gt; int;
+
+// Bad, needs comments to see what is happening:
+// Accepts: [Int, Int]
+// Returns: Int
+fn my_untyped_foo(input: Type) -&gt; Type;</code></pre>
+<p>We could reclaim this information if we wanted by having folks write typed functions and have a macro that derived the outer function that took in <code>Type</code> and unwrapped it into the shape we need.</p>
+<h2>Going to and from the typed world</h2>
+<p>If you have typed data there&#039;s a clear 1:1 translated to and from our dynamic types. Something like:</p>
+<pre><code class="language-rust">struct Person {
+  name: String,
+  age: int64,
+}
+
+impl Person {
+	fn to_type(&amp;self) -&gt; Type {
+		let mut map = HashMap::new();
+		map.insert(&quot;name&quot;.to_string(), self.name.copy());
+		map.insert(&quot;age&quot;.to_string(), self.age);
+		Type::Dict(map)
+	}
+	
+	fn from_type(t: &amp;Type) -&gt; Self {
+		let Type::HashMap(map) = t else { panic!(); };
+		Person {
+			name: map.get(&quot;name&quot;).unwrap().clone(),
+			age: map.get(&quot;age&quot;).unwrap().clone(),
+		}
+	}
+}</code></pre>
+<p>Now you could write a <code>derive</code> macro to make these automatic. The author of the derive macro would just need to make sure that all of the standard library types implement the trait to go to/from Type.</p>
+<h2>Rust crimes: Panicking and unwrap</h2>
+<p>Even in the little bit of code that we&#039;ve written so far we can see that I&#039;m committing some crimes against the spirit of how Rust is normally written. The most egregious crime is the liberal use of <code>unwrap</code> and <code>panic</code>.</p>
+<p>Using these two things has the benefit of simplifying all of the functions that we write and providing clear errors when something goes wrong. They have the major downside of only blowing up at runtime though, so you might not know about problems ahead of time. This problem feels fairly intrinsic to dynamic typing though: if you want dynamic types you are trading compile time strictness for possibly bad runtime behavior.</p>
+<h2>Drawing the rest of the owl</h2>
+<p>If you actually wanted to use this dynamic types in practice there&#039;s a couple things I&#039;ve forgotten to mention.</p>
+<p>Syntax sugar for getting types &quot;into&quot; the dynamic world are really helpful. The easiest thing that I&#039;ve found is:</p>
+<pre><code class="language-rust">// Usage: let val = t(1);
+// Usage: let v = t(vec![1, 2, 3]);
+fn t&lt;T&gt;(v: T) -&gt; Type where Type: From&lt;T&gt;{
+    Type::from(v)
+}</code></pre>
+<p>You will also need to implement <code>std::ops</code> traits on your type so you can add values together. This area has some fun trade offs as well because when writing these functions you can decide on what behavior you want. This is the place where you can reimplement Python&#039;s <code>String * Int</code> behavior.</p>
+<h2>Wrapping Up</h2>
+<p>I hope this was a fun exploration of types. It is fun to think that we easily reclaim &quot;dynamic typing&quot; within a statically typed language. It seems much harder to add static typing into a dynamically typed language.</p>
+<p>I would love to see if this idea ever gained traction within Rust. I suspect that it hasn&#039;t been explored so far because there are lots of rough edges without buy-in from the compiler. Those rough edges are the need to convert primitives into <code>Type</code> when writing code, and the fact that using the <code>TypeFn</code> type means we can&#039;t name input parameters.</p>
+
+    </main>
+    <footer>
+      <p>&copy; 2026 Gilhooley.</p>
+    </footer>
+
+    <script src="../prism.js"></script>
+    
+  </body>
+</html>

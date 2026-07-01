@@ -1,19 +1,17 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Gilhooley</title>
-    <link>https://gilhooleyd.github.io/</link>
-    <description>Recent content on Gilhooley</description>
-    <generator>Custom JS SSG</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 03 Jul 2026 18:41:19 GMT</lastBuildDate>
-    <atom:link href="https://gilhooleyd.github.io/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Adding JS demos to my blog</title>
-      <link>https://gilhooleyd.github.io/posts/adding-js-demos-to-my-blog.html</link>
-      <pubDate>Fri, 03 Jul 2026 00:00:00 GMT</pubDate>
-      <guid>https://gilhooleyd.github.io/posts/adding-js-demos-to-my-blog.html</guid>
-      <description><![CDATA[<p>I&#039;ve been playing around with my own Static Site Generator made in javascript. One of the most exciting things about having my own SSG is that it is easy to add new features for things that I want.</p>
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Gilhooley</title>
+  <link href="https://gilhooleyd.github.io/atom.xml" rel="self"/>
+  <link href="https://gilhooleyd.github.io/"/>
+  <updated>2026-07-03T18:41:19.575Z</updated>
+  <id>https://gilhooleyd.github.io/</id>
+  <generator>Custom JS SSG</generator>
+  <entry>
+    <title>Adding JS demos to my blog</title>
+    <link href="https://gilhooleyd.github.io/posts/adding-js-demos-to-my-blog.html"/>
+    <id>https://gilhooleyd.github.io/posts/adding-js-demos-to-my-blog.html</id>
+    <updated>2026-07-03T00:00:00.000Z</updated>
+    <summary type="html"><![CDATA[<p>I&#039;ve been playing around with my own Static Site Generator made in javascript. One of the most exciting things about having my own SSG is that it is easy to add new features for things that I want.</p>
 <p>My latest cool feature is the ability to have interactive javascript code blocks. This should make it much easier to write blog posts with usable demos that other folks can play around with.</p>
 <p>To use this feature, I add <code>js-editor</code> to the language tag on a code block. The SSG will then use the <code>ace</code> library to create a code editor.</p>
 <h3>How it works</h3>
@@ -47,14 +45,14 @@ element.appendChild(btn);</div>
   </div>
   <div class="editor-right" id="output-editor-0"></div>
 </div>
-]]></description>
-    </item>
-    <item>
-      <title>Making our own dynamic types</title>
-      <link>https://gilhooleyd.github.io/posts/making-our-own-dynamic-types.html</link>
-      <pubDate>Sun, 12 Oct 2025 00:00:00 GMT</pubDate>
-      <guid>https://gilhooleyd.github.io/posts/making-our-own-dynamic-types.html</guid>
-      <description><![CDATA[<p>Types are very helpful in expressing your intent and enforcing constraints. They require you to think more closely about the problem. Changing your types are a sign that callers and callees need to be updated and this can be enforced by the compiler instead of at runtime.</p>
+]]></summary>
+  </entry>
+  <entry>
+    <title>Making our own dynamic types</title>
+    <link href="https://gilhooleyd.github.io/posts/making-our-own-dynamic-types.html"/>
+    <id>https://gilhooleyd.github.io/posts/making-our-own-dynamic-types.html</id>
+    <updated>2025-10-12T00:00:00.000Z</updated>
+    <summary type="html"><![CDATA[<p>Types are very helpful in expressing your intent and enforcing constraints. They require you to think more closely about the problem. Changing your types are a sign that callers and callees need to be updated and this can be enforced by the compiler instead of at runtime.</p>
 <p>Types are a useful tool for thinking about a problem. Often we can think in terms of the data that we need and that we should output, and the shape of the function we need becomes clear.</p>
 <p>However, dynamic typing has a lot of benefits as well. One often touted benefit is that you don&#039;t need to think as much before you start writing code. Another is that the code you write is &quot;more generic&quot;, it tends to be able to operate on lots of similarly &quot;shaped&quot; objects. Adding typing often requires a lot of boilerplate in order to get the types to align, especially in C++ and Rust where typing is strict.</p>
 <p>I&#039;ve been thinking recently about the bridge between strongly typed and dynamically typed languages. Writing in Python is a joy and writing in Rust can be a slog even though Rust is a much better designed language. Is it possible to reclaim some of the dynamic typing fun in Rust?</p>
@@ -125,14 +123,14 @@ fn t&lt;T&gt;(v: T) -&gt; Type where Type: From&lt;T&gt;{
 <h2>Wrapping Up</h2>
 <p>I hope this was a fun exploration of types. It is fun to think that we easily reclaim &quot;dynamic typing&quot; within a statically typed language. It seems much harder to add static typing into a dynamically typed language.</p>
 <p>I would love to see if this idea ever gained traction within Rust. I suspect that it hasn&#039;t been explored so far because there are lots of rough edges without buy-in from the compiler. Those rough edges are the need to convert primitives into <code>Type</code> when writing code, and the fact that using the <code>TypeFn</code> type means we can&#039;t name input parameters.</p>
-]]></description>
-    </item>
-    <item>
-      <title>We have pipe at home</title>
-      <link>https://gilhooleyd.github.io/posts/we-have-pipe-at-home.html</link>
-      <pubDate>Sat, 11 Oct 2025 00:00:00 GMT</pubDate>
-      <guid>https://gilhooleyd.github.io/posts/we-have-pipe-at-home.html</guid>
-      <description><![CDATA[<p>I haven&#039;t written any code in gleam but I&#039;ve liked what I&#039;ve seen about the language. It has a very functional programming orientation and a syntax that feels similar to Rust code. It compiles to the Erlang Virtual Machine, and it also compiles to javascript, meaning it can be used in a variety of useful environments.</p>
+]]></summary>
+  </entry>
+  <entry>
+    <title>We have pipe at home</title>
+    <link href="https://gilhooleyd.github.io/posts/we-have-pipe-at-home.html"/>
+    <id>https://gilhooleyd.github.io/posts/we-have-pipe-at-home.html</id>
+    <updated>2025-10-11T00:00:00.000Z</updated>
+    <summary type="html"><![CDATA[<p>I haven&#039;t written any code in gleam but I&#039;ve liked what I&#039;ve seen about the language. It has a very functional programming orientation and a syntax that feels similar to Rust code. It compiles to the Erlang Virtual Machine, and it also compiles to javascript, meaning it can be used in a variety of useful environments.</p>
 <p>One of gleam&#039;s killer features that I see mentioned is is the pipeline operator <code>|&gt;</code>. This operator takes the left hand side and passes it as an argument to the right hand side.</p>
 <p>Here is an <a href="https://tour.gleam.run/everything/#functions-pipelines">example from Beam&#039;s website</a>:</p>
 <pre><code class="language-python">// With the pipe operator
@@ -227,14 +225,14 @@ right = sorted(ints[1::2])</code></pre>
 <pre><code class="language-python">def distance(v): return abs(v[0] - v[1])
 
 pipe(zip(left, right), imap(distance), sum, print)</code></pre>
-]]></description>
-    </item>
-    <item>
-      <title>Yield Considered Unhelpful</title>
-      <link>https://gilhooleyd.github.io/posts/yield-considered-unhelpful.html</link>
-      <pubDate>Wed, 14 Apr 2021 00:00:00 GMT</pubDate>
-      <guid>https://gilhooleyd.github.io/posts/yield-considered-unhelpful.html</guid>
-      <description><![CDATA[<p>I had the idea for this post after reading <a href="https://www.realworldtech.com/forum/?threadid=189711&amp;curpostid=189752">Linus&#039;s take on the yield syscall</a>. It&#039;s worth a read if you haven&#039;t seen it, although I will be summarizing his points. I also think that the take missed a larger conversation about the APIs that a platform gives its users, and how that shapes correct user behavior.</p>
+]]></summary>
+  </entry>
+  <entry>
+    <title>Yield Considered Unhelpful</title>
+    <link href="https://gilhooleyd.github.io/posts/yield-considered-unhelpful.html"/>
+    <id>https://gilhooleyd.github.io/posts/yield-considered-unhelpful.html</id>
+    <updated>2021-04-14T00:00:00.000Z</updated>
+    <summary type="html"><![CDATA[<p>I had the idea for this post after reading <a href="https://www.realworldtech.com/forum/?threadid=189711&amp;curpostid=189752">Linus&#039;s take on the yield syscall</a>. It&#039;s worth a read if you haven&#039;t seen it, although I will be summarizing his points. I also think that the take missed a larger conversation about the APIs that a platform gives its users, and how that shapes correct user behavior.</p>
 <h2>What is &#039;yield&#039;?</h2>
 <p>The function in question is <a href="https://linux.die.net/man/2/sched</em>yield">sched<em>yield</a>. It is a very simple function that &#039;yields&#039; the remainder of your thread&#039;s time back to the scheduler. In modern operating systems we have &quot;preemptive scheduling&quot;, which means that the scheduler will interrupt, or preempt, your thread when a certain amount of time has passed. The scheduler preempts threads so that all of threads in the system can get a turn to make progress. Preemption stops a CPU-intensive thread from hogging all of the resources in your system.</p>
 <p><code>yield</code> is a relic from a non-preemptive scheduler world where threads had to be &#039;nice&#039; and let the scheduler know when they are done. A thread that calls <code>yield</code> is basically saying &quot;I&#039;m good, there&#039;s no more work for me to do right now. Put me in the back of the list and let all the other threads have a turn on the CPU&quot;. If the scheduler can&#039;t interrupt, or preempt, a thread then calling <code>yield</code> is the only way that the thread can return control to the scheduler. In modern OSes, schedulers only gives the thread a certain amount of time before the scheduler steps in and takes control back. Modern schedulers don&#039;t rely on threads calling <code>yield</code> anymore.</p>
@@ -259,7 +257,6 @@ pipe(zip(left, right), imap(distance), sum, print)</code></pre>
 <li>Please let the kernel know what you&#039;re waiting on by using a <code>futex</code> or other</li>
 <p>  kernel primitive. Help the kernel help you.</p>
 </ul>
-]]></description>
-    </item>
-  </channel>
-</rss>
+]]></summary>
+  </entry>
+</feed>

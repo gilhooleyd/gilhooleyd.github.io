@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adding JS demos to my blog</title>
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../prism.css">
+    <link rel="stylesheet" href="../style.css">
+  </head>
+  <body>
+    <header>
+      <a
+        href="../index.html"
+        style="font-weight: bold; font-size: 1.2rem; color: inherit"
+      >Gilhooley</a>
+      <nav>
+        <a href="../about.html" style="margin-left: 15px">About</a>
+      </nav>
+    </header>
+    <main>
+      <h1>Adding JS demos to my blog</h1> <div class="post-meta">2026-07-03</div> <p>I&#039;ve been playing around with my own Static Site Generator made in javascript. One of the most exciting things about having my own SSG is that it is easy to add new features for things that I want.</p>
+<p>My latest cool feature is the ability to have interactive javascript code blocks. This should make it much easier to write blog posts with usable demos that other folks can play around with.</p>
+<p>To use this feature, I add <code>js-editor</code> to the language tag on a code block. The SSG will then use the <code>ace</code> library to create a code editor.</p>
+<h3>How it works</h3>
+<p>On the right side of the editor, there is an output container. When you click <strong>Run</strong>, your code is executed. Your code has access to two special variables:</p>
+<ul>
+<li><code>element</code>: The <code>div</code> element on the right. You can manipulate it directly</li>
+<p>  (e.g., <code>element.style.backgroundColor = &#039;red&#039;</code>).</p>
+<li><code>log(...args)</code>: A helper function to print text or objects to the output</li>
+<p>  container.</p>
+</ul>
+<h3>Try it out!</h3>
+<p>Here is a simple example. Try changing the text, adding new logs, or editing the DOM styling, and then click <strong>Run</strong>.</p>
+<div class="interactive-editor">
+  <div class="editor-left">
+    <div class="ace-editor-instance" id="editor-0">log(&quot;Hello from the interactive editor!&quot;);
+log(&quot;Today is:&quot;, new Date().toLocaleDateString());
+
+// You can also manipulate the DOM directly:
+element.style.border = &quot;2px dashed #0969da&quot;;
+element.style.padding = &quot;15px&quot;;
+element.style.borderRadius = &quot;6px&quot;;
+element.style.marginTop = &quot;10px&quot;;
+
+const btn = document.createElement(&#039;button&#039;);
+btn.textContent = &quot;Click me!&quot;;
+btn.style.padding = &quot;5px 10px&quot;;
+btn.style.cursor = &quot;pointer&quot;;
+btn.onclick = () =&gt; alert(&quot;You clicked the generated button!&quot;);
+element.appendChild(btn);</div>
+    <button class="run-btn" onclick="runEditor('editor-0')">Run</button>
+  </div>
+  <div class="editor-right" id="output-editor-0"></div>
+</div>
+
+    </main>
+    <footer>
+      <p>&copy; 2026 Gilhooley.</p>
+    </footer>
+
+    <script src="../prism.js"></script>
+    
+<script src="../ace/ace.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const editorDivs = document.querySelectorAll('.ace-editor-instance');
+    if (editorDivs.length === 0) return;
+
+    // Set base path for Ace so it can load modes and themes relatively
+    ace.config.set('basePath', '../ace/');
+
+    window.interactiveEditors = {};
+    editorDivs.forEach(div => {
+      const id = div.id;
+      const editor = ace.edit(id);
+      // No theme set -> defaults to the light theme
+      editor.session.setMode("ace/mode/javascript");
+      editor.session.setOption("useWorker", false); // Disable worker to avoid extra file requests
+      editor.setOptions({
+        fontSize: "14px",
+        maxLines: Infinity, // Auto-grow height to prevent scrolling
+        minLines: 8
+      });
+      window.interactiveEditors[id] = editor;
+    });
+  });
+
+  function runEditor(id) {
+    const editor = window.interactiveEditors[id];
+    const outputDiv = document.getElementById(`output-${id}`);
+    if (!editor || !outputDiv) return;
+
+    // Clear previous output
+    outputDiv.innerHTML = '';
+
+    const code = editor.getValue();
+    try {
+      const log = (...args) => {
+        const msg = args.map(arg => {
+          if (typeof arg === 'object') {
+            try {
+              return JSON.stringify(arg, null, 2);
+            } catch (e) {
+              return arg.toString();
+            }
+          }
+          return arg;
+        }).join(' ');
+        
+        const pre = document.createElement('pre');
+        pre.style.margin = '0';
+        pre.style.whiteSpace = 'pre-wrap';
+        pre.style.fontFamily = 'monospace';
+        pre.textContent = msg;
+        outputDiv.appendChild(pre);
+      };
+
+      const runFn = new Function('element', 'log', code);
+      runFn(outputDiv, log);
+    } catch (err) {
+      outputDiv.innerHTML = `<span style="color: #ff8585; font-family: monospace;">Error: ${err.message}</span>`;
+    }
+  }
+</script>
+
+  </body>
+</html>
