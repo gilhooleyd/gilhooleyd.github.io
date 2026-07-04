@@ -29,7 +29,7 @@ function escapeXml(unsafe) {
  * @param {string} params.baseURL
  * @param {string} params.siteTitle
  * @param {string} params.docsDir
- * @param {Array<{title: string, date: string, url: string, timestamp: number, htmlContent: string}>} params.posts
+ * @param {Array<{title: string, date: string, url: string, timestamp: number}>} params.posts
  */
 export function generateFeeds({ baseURL, siteTitle, docsDir, posts }) {
   const cleanBase = baseURL.endsWith("/") ? baseURL : baseURL + "/";
@@ -57,14 +57,12 @@ export function generateFeeds({ baseURL, siteTitle, docsDir, posts }) {
     const pubDate = post.date
       ? new Date(post.date).toUTCString()
       : lastBuildDate;
-    const safeHtml = post.htmlContent.replace(/]]>/g, "]]&gt;<![CDATA[");
 
     rss += `    <item>
       <title>${escapeXml(post.title)}</title>
       <link>${postUrl}</link>
       <pubDate>${pubDate}</pubDate>
       <guid>${postUrl}</guid>
-      <description><![CDATA[${safeHtml}]]></description>
     </item>\n`;
   }
 
@@ -86,14 +84,12 @@ export function generateFeeds({ baseURL, siteTitle, docsDir, posts }) {
     const updated = post.date
       ? new Date(post.date).toISOString()
       : lastBuildDateISO;
-    const safeHtml = post.htmlContent.replace(/]]>/g, "]]&gt;<![CDATA[");
 
     atom += `  <entry>
     <title>${escapeXml(post.title)}</title>
     <link href="${postUrl}"/>
     <id>${postUrl}</id>
     <updated>${updated}</updated>
-    <summary type="html"><![CDATA[${safeHtml}]]></summary>
   </entry>\n`;
   }
 

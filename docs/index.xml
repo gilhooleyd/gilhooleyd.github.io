@@ -6,260 +6,31 @@
     <description>Recent content on Gilhooley</description>
     <generator>Custom JS SSG</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 03 Jul 2026 18:41:19 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 04 Jul 2026 15:50:11 GMT</lastBuildDate>
     <atom:link href="https://gilhooleyd.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Adding JS demos to my blog</title>
       <link>https://gilhooleyd.github.io/posts/adding-js-demos-to-my-blog.html</link>
       <pubDate>Fri, 03 Jul 2026 00:00:00 GMT</pubDate>
       <guid>https://gilhooleyd.github.io/posts/adding-js-demos-to-my-blog.html</guid>
-      <description><![CDATA[<p>I&#039;ve been playing around with my own Static Site Generator made in javascript. One of the most exciting things about having my own SSG is that it is easy to add new features for things that I want.</p>
-<p>My latest cool feature is the ability to have interactive javascript code blocks. This should make it much easier to write blog posts with usable demos that other folks can play around with.</p>
-<p>To use this feature, I add <code>js-editor</code> to the language tag on a code block. The SSG will then use the <code>ace</code> library to create a code editor.</p>
-<h3>How it works</h3>
-<p>On the right side of the editor, there is an output container. When you click <strong>Run</strong>, your code is executed. Your code has access to two special variables:</p>
-<ul>
-<li><code>element</code>: The <code>div</code> element on the right. You can manipulate it directly</li>
-<p>  (e.g., <code>element.style.backgroundColor = &#039;red&#039;</code>).</p>
-<li><code>log(...args)</code>: A helper function to print text or objects to the output</li>
-<p>  container.</p>
-</ul>
-<h3>Try it out!</h3>
-<p>Here is a simple example. Try changing the text, adding new logs, or editing the DOM styling, and then click <strong>Run</strong>.</p>
-<div class="interactive-editor">
-  <div class="editor-left">
-    <div class="ace-editor-instance" id="editor-0">log(&quot;Hello from the interactive editor!&quot;);
-log(&quot;Today is:&quot;, new Date().toLocaleDateString());
-
-// You can also manipulate the DOM directly:
-element.style.border = &quot;2px dashed #0969da&quot;;
-element.style.padding = &quot;15px&quot;;
-element.style.borderRadius = &quot;6px&quot;;
-element.style.marginTop = &quot;10px&quot;;
-
-const btn = document.createElement(&#039;button&#039;);
-btn.textContent = &quot;Click me!&quot;;
-btn.style.padding = &quot;5px 10px&quot;;
-btn.style.cursor = &quot;pointer&quot;;
-btn.onclick = () =&gt; alert(&quot;You clicked the generated button!&quot;);
-element.appendChild(btn);</div>
-    <button class="run-btn" onclick="runEditor('editor-0')">Run</button>
-  </div>
-  <div class="editor-right" id="output-editor-0"></div>
-</div>
-]]></description>
     </item>
     <item>
       <title>Making our own dynamic types</title>
       <link>https://gilhooleyd.github.io/posts/making-our-own-dynamic-types.html</link>
       <pubDate>Sun, 12 Oct 2025 00:00:00 GMT</pubDate>
       <guid>https://gilhooleyd.github.io/posts/making-our-own-dynamic-types.html</guid>
-      <description><![CDATA[<p>Types are very helpful in expressing your intent and enforcing constraints. They require you to think more closely about the problem. Changing your types are a sign that callers and callees need to be updated and this can be enforced by the compiler instead of at runtime.</p>
-<p>Types are a useful tool for thinking about a problem. Often we can think in terms of the data that we need and that we should output, and the shape of the function we need becomes clear.</p>
-<p>However, dynamic typing has a lot of benefits as well. One often touted benefit is that you don&#039;t need to think as much before you start writing code. Another is that the code you write is &quot;more generic&quot;, it tends to be able to operate on lots of similarly &quot;shaped&quot; objects. Adding typing often requires a lot of boilerplate in order to get the types to align, especially in C++ and Rust where typing is strict.</p>
-<p>I&#039;ve been thinking recently about the bridge between strongly typed and dynamically typed languages. Writing in Python is a joy and writing in Rust can be a slog even though Rust is a much better designed language. Is it possible to reclaim some of the dynamic typing fun in Rust?</p>
-<p>Let&#039;s start with the value type:</p>
-<pre><code class="language-rust">enum Type {
-  Void,
-  Int(i64),
-  Float(f64),
-  String(String),
-  Vector(Vec&lt;Type&gt;),
-  Dict(HashMap&lt;Type, Type&gt;),
-}</code></pre>
-<p>Look at that! It already feels like we&#039;re most of the way to dynamic typing.</p>
-<p>What about first class support for functions? Here&#039;s where we need to make some design decisions. All dynamically typed functions will have to take in and return the same type, so the most generic thing we can do is:</p>
-<pre><code class="language-rust">struct TypeFn {
-  function: Rc&lt;dyn Fn(Type) -&gt; Type&gt;,
-}
-
-enum Type {
-  Fn(TypeFn)
-}</code></pre>
-<p>This means that all of our functions take in and return a single <code>Type</code> object. If we want a function that accepts or returns multiple values the object can be <code>Type::Vector</code>.</p>
-<p>Here is where we start to see a specific degrade in ergonomics because functions no longer name their input or output parameters. Every dynamically typed language has the ability to name input parameters since it helps so much for usability.</p>
-<pre><code class="language-rust">// Good, can see what is happening.
-fn my_foo(a: int, b: int) -&gt; int;
-
-// Bad, needs comments to see what is happening:
-// Accepts: [Int, Int]
-// Returns: Int
-fn my_untyped_foo(input: Type) -&gt; Type;</code></pre>
-<p>We could reclaim this information if we wanted by having folks write typed functions and have a macro that derived the outer function that took in <code>Type</code> and unwrapped it into the shape we need.</p>
-<h2>Going to and from the typed world</h2>
-<p>If you have typed data there&#039;s a clear 1:1 translated to and from our dynamic types. Something like:</p>
-<pre><code class="language-rust">struct Person {
-  name: String,
-  age: int64,
-}
-
-impl Person {
-	fn to_type(&amp;self) -&gt; Type {
-		let mut map = HashMap::new();
-		map.insert(&quot;name&quot;.to_string(), self.name.copy());
-		map.insert(&quot;age&quot;.to_string(), self.age);
-		Type::Dict(map)
-	}
-	
-	fn from_type(t: &amp;Type) -&gt; Self {
-		let Type::HashMap(map) = t else { panic!(); };
-		Person {
-			name: map.get(&quot;name&quot;).unwrap().clone(),
-			age: map.get(&quot;age&quot;).unwrap().clone(),
-		}
-	}
-}</code></pre>
-<p>Now you could write a <code>derive</code> macro to make these automatic. The author of the derive macro would just need to make sure that all of the standard library types implement the trait to go to/from Type.</p>
-<h2>Rust crimes: Panicking and unwrap</h2>
-<p>Even in the little bit of code that we&#039;ve written so far we can see that I&#039;m committing some crimes against the spirit of how Rust is normally written. The most egregious crime is the liberal use of <code>unwrap</code> and <code>panic</code>.</p>
-<p>Using these two things has the benefit of simplifying all of the functions that we write and providing clear errors when something goes wrong. They have the major downside of only blowing up at runtime though, so you might not know about problems ahead of time. This problem feels fairly intrinsic to dynamic typing though: if you want dynamic types you are trading compile time strictness for possibly bad runtime behavior.</p>
-<h2>Drawing the rest of the owl</h2>
-<p>If you actually wanted to use this dynamic types in practice there&#039;s a couple things I&#039;ve forgotten to mention.</p>
-<p>Syntax sugar for getting types &quot;into&quot; the dynamic world are really helpful. The easiest thing that I&#039;ve found is:</p>
-<pre><code class="language-rust">// Usage: let val = t(1);
-// Usage: let v = t(vec![1, 2, 3]);
-fn t&lt;T&gt;(v: T) -&gt; Type where Type: From&lt;T&gt;{
-    Type::from(v)
-}</code></pre>
-<p>You will also need to implement <code>std::ops</code> traits on your type so you can add values together. This area has some fun trade offs as well because when writing these functions you can decide on what behavior you want. This is the place where you can reimplement Python&#039;s <code>String * Int</code> behavior.</p>
-<h2>Wrapping Up</h2>
-<p>I hope this was a fun exploration of types. It is fun to think that we easily reclaim &quot;dynamic typing&quot; within a statically typed language. It seems much harder to add static typing into a dynamically typed language.</p>
-<p>I would love to see if this idea ever gained traction within Rust. I suspect that it hasn&#039;t been explored so far because there are lots of rough edges without buy-in from the compiler. Those rough edges are the need to convert primitives into <code>Type</code> when writing code, and the fact that using the <code>TypeFn</code> type means we can&#039;t name input parameters.</p>
-]]></description>
     </item>
     <item>
       <title>We have pipe at home</title>
       <link>https://gilhooleyd.github.io/posts/we-have-pipe-at-home.html</link>
       <pubDate>Sat, 11 Oct 2025 00:00:00 GMT</pubDate>
       <guid>https://gilhooleyd.github.io/posts/we-have-pipe-at-home.html</guid>
-      <description><![CDATA[<p>I haven&#039;t written any code in gleam but I&#039;ve liked what I&#039;ve seen about the language. It has a very functional programming orientation and a syntax that feels similar to Rust code. It compiles to the Erlang Virtual Machine, and it also compiles to javascript, meaning it can be used in a variety of useful environments.</p>
-<p>One of gleam&#039;s killer features that I see mentioned is is the pipeline operator <code>|&gt;</code>. This operator takes the left hand side and passes it as an argument to the right hand side.</p>
-<p>Here is an <a href="https://tour.gleam.run/everything/#functions-pipelines">example from Beam&#039;s website</a>:</p>
-<pre><code class="language-python">// With the pipe operator
-&quot;Hello, Mike!&quot;
-  |&gt; string.drop_end(1)
-  |&gt; string.drop_start(7)
-  |&gt; io.println</code></pre>
-<p>A way that this would be written without the pipeline operator and without class methods would look like:</p>
-<pre><code class="language-python">io.println(string.drop_start(string.drop_end(&quot;Hello, Mike!&quot;, 1), 7));</code></pre>
-<p>You can see that this line is much harder to read. The functions have to be read from right-to-left, and the arguments have to be read by &quot;ping-ponging&quot; your eyes from the left side of the line back to the right.</p>
-<p>Why is pipelining nice? Can we have pipelining in other languages? Continue reading to find out!</p>
-<h1>In-fix vs Pre-fix notation</h1>
-<p>I believe these terms originally came from mathematics, and I only first heard about them when I started looking closer at functional programming. The terms are simple to understand.</p>
-<ul>
-<li>Infix - The operator is placed between or &quot;in the middle&quot; of two operands</li>
-<p>  - Example: <code>2 + 2</code></p>
-<li>Prefix - The operator is placed before the operands</li>
-<p>  - Example: <code>cos(0)</code></p>
-</ul>
-<p>Infix operators are normally &quot;binary operators&quot; meaning they accept two arguments. This makes sense, as there&#039;s not a sensible place to put a third or fourth argument. Generally when you chain infix operators you read the operations left-to-right, although math operators comes with their own precedence rules (PEMDAS) to make things more complicated.</p>
-<p>Prefix operators can accept any amount of arguments which make them more flexible. LISP languages consider prefix operators superior and generally don&#039;t have support for infix operators without using lambdas.</p>
-<p>One major problem with prefix operators is they are read &quot;in-to-out&quot;, which involves the &quot;ping ponging&quot; that we saw in the above example. Here&#039;s a math example using prefix notation:</p>
-<pre><code class="language-">(- (+ 5 (- 4 3) 2) 1)</code></pre>
-<p>Here&#039;s the same example using infix notation:</p>
-<pre><code class="language-">5 + 4 - 3 + 2 - 1</code></pre>
-<p>For my eyes the infix notation is much easier to read, as it&#039;s read left-to-right without backtracking.</p>
-<h1>Method calls as infix notation</h1>
-<p>It&#039;s interesting to think that a method call is a form of infix notation. The call</p>
-<pre><code class="language-python">class.function(arg1, arg2)</code></pre>
-<p>Can be thought of as the infix version of:</p>
-<pre><code class="language-python">function(class, arg1, arg2)</code></pre>
-<p>The &quot;builder pattern&quot; is one example where the functions return the modified class, which allows the developer to chain methods together. This is one form of pipelining that folks might be familiar with:</p>
-<pre><code class="language-python">my_object.set_a(1).set_b(2).set_c(3).build()</code></pre>
-<p>Compare this with the prefix notation version:</p>
-<pre><code class="language-python">build(set_c(set_b(set_a(my_object, 1), 2), 3))</code></pre>
-<p>I don&#039;t think anyone would be writing the prefix notation, the ping-ponging really hurts the readability.</p>
-<p>Using functions for infix notation gets us &quot;close&quot; to Gleam&#039;s syntax but it&#039;s less expressive. It requires:</p>
-<p>1. All functions return the class that you want to operate on 2. All functions that you want to call are method functions Certainly (2) is    difficult. Someone is not adding method functions directly to <code>List</code> in    python, and so the amount that you&#039;re able to pipeline is limited.</p>
-<p>However, higher order functions come to our rescue!</p>
-<h1>We have pipe at home: python</h1>
-<p>All we need to do to &quot;replicate&quot; the pipe functionality is to write something that takes in data and a list of functions, and applies the data to the functions one after the other. We can write this simply in python with:</p>
-<pre><code class="language-python">def pipe(data, *fns):
-	for f in fns:
-	  data = f(data)
-	return data
-	
-# Example
-def add2(num):
-  return num + 2
-
-# Should print &#039;5&#039;
-pipe(1, add2, add2, print)</code></pre>
-<p>The main limitation to pipe is that each function can only accept a single argument, which is that data that is being passed to it. In order to make functions with a single argument, we will either need to create <code>llambda</code> functions or use <code>partial</code></p>
-<pre><code class="language-python">from functools import partial
-
-# Should print &#039;5&#039;
-pipe(1, partial(add(2)), lambda a: a + 2, print)</code></pre>
-<p>We can write the original gleam example in this way (although we need some help because python doesn&#039;t have a slice function):</p>
-<pre><code class="language-python">def slice(start=0, end=s.len, count_by=1, s):
-  return s[start:end:count_by]
-  
-pipe(&quot;Hello, Mike!&quot;, partial(slice(0, -1)), partial(slice(7)), print)</code></pre>
-<p>Although since python makes slicing strings very easy I think everyone would agree that the above example is much worse than:</p>
-<pre><code class="language-python">print(&quot;Hello, Mike!&quot;[7:-1])</code></pre>
-<h1>A more complicated example: Day 1 Advent of Code</h1>
-<p>The <a href="https://adventofcode.com/2024/day/1">2024 Advent of Code day 1</a> challenge involves takes as input lines with 2 numbers:</p>
-<pre><code class="language-">3   4
-4   3
-2   5
-1   3
-3   9
-3   3</code></pre>
-<p>The task is to collect the left and right columns, sort each column, and then add up the &#039;distances&#039; between each value in each column.</p>
-<p>We need one more function in order to write our solution and that is <code>ipipe</code> which is like pipe except it operates on iterators:</p>
-<pre><code class="language-python">def ipipe(iter, *fns):
-  for f in fns:
-    iter = map(f, iter)
-  return iter</code></pre>
-<p>Now, to solve the problem we first open and parse the input</p>
-<pre><code class="language-python"># This 
-# - takes the string
-# - opens it as a file
-# - reads the file as a string
-# - splits the string by whitespace (returns a list)
-# - calls `int()` on each string in the array
-# - calls `list()` on the iterator (returns a list)
-ints = pipe(&quot;day1&quot;, open, call(&quot;read&quot;), call(&quot;split&quot;), ipipe(int), list)</code></pre>
-<p>We then collect our left and right columns and sort them:</p>
-<pre><code class="language-python">left = sorted(ints[0::2])
-right = sorted(ints[1::2])</code></pre>
-<p>Then we calculate the distance between the columns and print it:</p>
-<pre><code class="language-python">def distance(v): return abs(v[0] - v[1])
-
-pipe(zip(left, right), imap(distance), sum, print)</code></pre>
-]]></description>
     </item>
     <item>
       <title>Yield Considered Unhelpful</title>
       <link>https://gilhooleyd.github.io/posts/yield-considered-unhelpful.html</link>
       <pubDate>Wed, 14 Apr 2021 00:00:00 GMT</pubDate>
       <guid>https://gilhooleyd.github.io/posts/yield-considered-unhelpful.html</guid>
-      <description><![CDATA[<p>I had the idea for this post after reading <a href="https://www.realworldtech.com/forum/?threadid=189711&amp;curpostid=189752">Linus&#039;s take on the yield syscall</a>. It&#039;s worth a read if you haven&#039;t seen it, although I will be summarizing his points. I also think that the take missed a larger conversation about the APIs that a platform gives its users, and how that shapes correct user behavior.</p>
-<h2>What is &#039;yield&#039;?</h2>
-<p>The function in question is <a href="https://linux.die.net/man/2/sched</em>yield">sched<em>yield</a>. It is a very simple function that &#039;yields&#039; the remainder of your thread&#039;s time back to the scheduler. In modern operating systems we have &quot;preemptive scheduling&quot;, which means that the scheduler will interrupt, or preempt, your thread when a certain amount of time has passed. The scheduler preempts threads so that all of threads in the system can get a turn to make progress. Preemption stops a CPU-intensive thread from hogging all of the resources in your system.</p>
-<p><code>yield</code> is a relic from a non-preemptive scheduler world where threads had to be &#039;nice&#039; and let the scheduler know when they are done. A thread that calls <code>yield</code> is basically saying &quot;I&#039;m good, there&#039;s no more work for me to do right now. Put me in the back of the list and let all the other threads have a turn on the CPU&quot;. If the scheduler can&#039;t interrupt, or preempt, a thread then calling <code>yield</code> is the only way that the thread can return control to the scheduler. In modern OSes, schedulers only gives the thread a certain amount of time before the scheduler steps in and takes control back. Modern schedulers don&#039;t rely on threads calling <code>yield</code> anymore.</p>
-<h2>Why is yield unhelpful?</h2>
-<p>Yield is unhelpful because it doesn&#039;t give the scheduler enough information to do its job correctly.</p>
-<p>In a modern OS there should be no legitimate reason to call yield. If your thread is &#039;waiting&#039; for something to happen, then it should <strong>block</strong> on that thing happening. If your thread is extremely CPU-intensive then it should <strong>trust</strong> that the scheduler will preempt you and give you and the rest of the system the correct priorities.</p>
-<p>Yield is essentially saying &quot;Put me to sleep for a random amount of time&quot;, because your thread is being moved to the back of the scheduler&#039;s run-queue. Does being put to sleep for a random amount of time sound like useful or understandable behavior? You will not be able to get consistent or replicable performance results if you have <code>yields</code> all over your program.</p>
-<h3>But I&#039;m spin-waiting for something and I don&#039;t want to block the CPU.</h3>
-<p>I don&#039;t really believe that user-space code should use a spin-lock. I think that using a <a href="https://en.wikipedia.org/wiki/Futex">fast userspace mutex, or futex</a> will probably give you better performance characteristics (Futex&#039;s don&#039;t have to enter the kernel in the &quot;common case&quot; of the lock being uncontested).</p>
-<p>That aside, if you&#039;re convinced that you need a spinlock &quot;for performance&quot;, then why are you yielding? The scheduler prevents you from hogging all of the resources, so spin away on that lock until you get preempted. If you check once and then yield, chances are that you will miss what you&#039;re waiting for while the scheduler is running other threads. Given that the Linux scheduler&#039;s timeslice is 100ms, in the worst case you will be late to your event by 100ms * the number of runnable threads on your CPU.</p>
-<p>If you&#039;re spin-waiting in userspace, the kernel can&#039;t help you because the kernel doesn&#039;t know what you&#039;re doing. The kernel&#039;s job is to help you, you should let it! If you use a futex, the kernel knows what you&#039;re blocked on. The kernel will know immediately when your resource is free again, and if you&#039;re high enough priority you might be run immediately after your resource is free. This shortens the worst-case scheduling scenario tremendously and it should also give you <strong>predictable</strong> timing.</p>
-<h3>But I&#039;m CPU intensive and other things might be more important.</h3>
-<p>This is the example that Linus gave:</p>
-<p>&gt; You&#039;ll find various random GUI programs doing that because they are threaded, &gt; and one thread does things like update the screen, while another thread does &gt; calculations. The calculation loop (which is still important, just not &gt; latency-critical) might have &quot;sched_yield() in it as a cheap way of saying &gt; &quot;maybe there&#039;s a more important UI event going on&quot;.</p>
-<p>I agree that many systems have been built like this, and doing this might be the simplest way to get a system off the ground. However, this is not a predictable or understandable system. The problem with this approach is that decisions about scheduling are being made at the wrong level.</p>
-<p>As a process, you should <strong>trust</strong> the scheduler. If you are being run, you should trust that you are the highest priority thing being run, and you should do your work. Please don&#039;t try and &quot;guess&quot; at the schedulers job, because you don&#039;t have any of the information that the scheduler has. You don&#039;t know how much load the system is under. You don&#039;t know what priorities the other threads have. You don&#039;t know who else is runnable at this exact moment. The scheduler has all of this information! And the scheduler chose you to have the CPU! Please don&#039;t hand the CPU back if you have work that you can do.</p>
-<h2>In conclusion.</h2>
-<ul>
-<li>Think of <code>yield</code> as saying &quot;I would like to sleep for a random amount of</li>
-<p>  time&quot;.</p>
-<li>Please don&#039;t use <code>yield</code> in your code to be &#039;nice&#039;. Trust the scheduler.</li>
-<li>Please let the kernel know what you&#039;re waiting on by using a <code>futex</code> or other</li>
-<p>  kernel primitive. Help the kernel help you.</p>
-</ul>
-]]></description>
     </item>
   </channel>
 </rss>

@@ -83,15 +83,14 @@ const aceScripts = (relativeRoot) => `
  * @param {string} params.relativeRoot
  * @param {string} [params.date]
  * @param {string} params.siteTitle
- * @param {boolean} [params.isHome]
  * @returns {string}
  */
 export function getTemplate(
-  { title, content, relativeRoot, date, siteTitle, isHome },
+  { title, content, relativeRoot, date, siteTitle},
 ) {
   const year = new Date().getFullYear();
   const dateHtml = date ? `<div class="post-meta">${date}</div>` : "";
-  const titleHtml = (title && !isHome) ? `<h1>${title}</h1>` : "";
+  const titleHtml = title ? `<h1>${title}</h1>` : "";
 
   const hasEditor = content.includes('class="ace-editor-instance"');
   const extraScripts = hasEditor ? aceScripts(relativeRoot) : "";

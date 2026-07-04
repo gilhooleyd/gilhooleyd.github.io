@@ -9,6 +9,20 @@ const projectRoot = path.resolve(__dirname, "..");
 export const contentDir = path.join(projectRoot, "content");
 export const docsDir = path.join(projectRoot, "docs");
 export const staticDir = path.join(projectRoot, "static");
+const postsDir = path.join(contentDir, "posts");
+
+
+function isPathInside(childPath, parentPath) {
+  const absoluteChild = path.resolve(childPath);
+  const absoluteParent = path.resolve(parentPath);
+
+  const relative = path.relative(absoluteParent, absoluteChild);
+  return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
+}
+
+function filePathIsPost(filePath) {
+  return isPathInside(filePath, postsDir);
+}
 
 /**
  * A simple JSON5 parser that removes comments and trailing commas
@@ -35,27 +49,19 @@ function parseJSON5(text) {
   return JSON.parse(cleaned);
 }
 
+let siteMetadata = null;
 /**
  * Parses metadata.json5 to extract baseURL and site title.
  * Fallbacks are provided if the file is missing or cannot be parsed.
  * @returns {{ baseURL: string, siteTitle: string }}
  */
 export function getSiteMetadata() {
-  let baseURL = "https://gilhooleyd.github.io/";
-  let siteTitle = "My Blog";
+  if (siteMetadata) return siteMetadata;
 
   const metadataPath = path.join(projectRoot, "metadata.json5");
-  if (fs.existsSync(metadataPath)) {
-    try {
-      const content = fs.readFileSync(metadataPath, "utf-8");
-      const config = parseJSON5(content);
-      if (config.baseURL) baseURL = config.baseURL;
-      if (config.siteTitle) siteTitle = config.siteTitle;
-    } catch (err) {
-      console.error("Error reading metadata.json5:", err);
-    }
-  }
-  return { baseURL, siteTitle };
+  const content = fs.readFileSync(metadataPath, "utf-8");
+  siteMetadata = parseJSON5(content);
+  return siteMetadata;
 }
 
 /**
@@ -66,8 +72,7 @@ export function getSiteMetadata() {
 function getFilesRecursively(dir) {
   let results = [];
   if (!fs.existsSync(dir)) return results;
-  const list = fs.readdirSync(dir);
-  for (const file of list) {
+  for (const file of fs.readdirSync(dir)) {
     const filePath = path.join(dir, file);
     const stat = fs.statSync(filePath);
     if (stat && stat.isDirectory()) {
@@ -109,162 +114,99 @@ function getRelativeRoot(relativePath) {
   return depth > 0 ? "../".repeat(depth) : "./";
 }
 
+function convertText(relativePath, content) {
+  const { frontMatter, markdownContent } = parseFrontMatter(content);
+
+  const title = frontMatter.title || path.basename(relativePath, ".md");
+  const date = frontMatter.date || null;
+  const htmlRelativePath = relativePath.replace(/\.md$/, ".html");
+  const metadata = {
+    title,
+    date,
+    url: htmlRelativePath,
+    timestamp: date ? new Date(date).getTime() : 0,
+  };
+
+  const htmlContent = parseMarkdown(markdownContent);
+  const relativeRoot = getRelativeRoot(relativePath);
+  const { siteTitle } = getSiteMetadata();
+  const fullHtml = getTemplate({
+    title,
+    content: htmlContent,
+    relativeRoot,
+    date,
+    siteTitle,
+  });
+
+  return {
+    metadata,
+    fullHtml,
+  };
+}
+
 /**
  * Compiles a single markdown file to HTML.
  * @param {string} filePath
  */
-export function compileFile(filePath) {
+function compileFile(filePath) {
   const relativePath = path.relative(contentDir, filePath);
   const htmlRelativePath = relativePath.replace(/\.md$/, ".html");
   const outputPath = path.join(docsDir, htmlRelativePath);
 
-  if (!fs.existsSync(filePath)) {
-    // File was deleted
-    if (fs.existsSync(outputPath)) {
-      fs.unlinkSync(outputPath);
-      console.log(`Removed: docs/${htmlRelativePath}`);
-    }
-    return;
-  }
+  const content = fs.readFileSync(filePath, "utf-8");
+  const post = convertText(relativePath, content);
 
-  try {
-    const content = fs.readFileSync(filePath, "utf-8");
-    const { frontMatter, markdownContent } = parseFrontMatter(content);
-    const htmlContent = parseMarkdown(markdownContent);
-
-    const relativeRoot = getRelativeRoot(relativePath);
-    const title = frontMatter.title || path.basename(relativePath, ".md");
-    const date = frontMatter.date || null;
-    const { siteTitle } = getSiteMetadata();
-    const isHome = relativePath === "index.md";
-
-    const fullHtml = getTemplate({
-      title,
-      content: htmlContent,
-      relativeRoot,
-      date,
-      siteTitle,
-      isHome,
-    });
-
-    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-    fs.writeFileSync(outputPath, fullHtml, "utf-8");
-    console.log(`Compiled: ${relativePath} -> docs/${htmlRelativePath}`);
-  } catch (err) {
-    console.error(`Error compiling ${relativePath}:`, err);
-  }
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, post.fullHtml, "utf-8");
+  console.log(`Compiled: ${relativePath} -> docs/${htmlRelativePath}`);
+  return post;
 }
 
-/**
- * Copies a single static file to docs.
- * @param {string} filePath
- */
-export function copyStaticFile(filePath) {
+function copyStaticFile(filePath) {
   const relativePath = path.relative(contentDir, filePath);
   const outputPath = path.join(docsDir, relativePath);
 
-  if (!fs.existsSync(filePath)) {
-    if (fs.existsSync(outputPath)) {
-      fs.unlinkSync(outputPath);
-      console.log(`Removed static: docs/${relativePath}`);
-    }
-    return;
-  }
-
-  try {
-    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-    fs.copyFileSync(filePath, outputPath);
-    console.log(`Copied static: ${relativePath} -> docs/${relativePath}`);
-  } catch (err) {
-    console.error(`Error copying static file ${relativePath}:`, err);
-  }
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.copyFileSync(filePath, outputPath);
+  console.log(`Copied static: ${relativePath} -> docs/${relativePath}`);
 }
 
-/**
- * Rebuilds metadata files: index.html (if no content/index.md), RSS feed, and Atom feed.
- */
-export function rebuildMeta() {
+function buildMeta(posts) {
   const { baseURL, siteTitle } = getSiteMetadata();
-  const postsDir = path.join(contentDir, "posts");
-  const files = getFilesRecursively(postsDir);
-  const posts = [];
 
-  for (const filePath of files) {
-    if (!filePath.endsWith(".md")) continue;
-
-    const relativePath = path.relative(contentDir, filePath);
-    try {
-      const content = fs.readFileSync(filePath, "utf-8");
-      const { frontMatter, markdownContent } = parseFrontMatter(content);
-      const title = frontMatter.title || path.basename(relativePath, ".md");
-      const date = frontMatter.date || null;
-      const htmlRelativePath = relativePath.replace(/\.md$/, ".html");
-      const htmlContent = parseMarkdown(markdownContent);
-
-      posts.push({
-        title,
-        date,
-        url: htmlRelativePath,
-        timestamp: date ? new Date(date).getTime() : 0,
-        htmlContent,
-      });
-    } catch (e) {
-      // Ignore errors
-    }
-  }
-
-  // Sort posts by date descending
+  // Sort posts by newest first.
   posts.sort((a, b) => b.timestamp - a.timestamp);
 
-  // 1. Rebuild Index HTML if no content/index.md exists
-  const indexMdPath = path.join(contentDir, "index.md");
-  if (!fs.existsSync(indexMdPath)) {
-    let postsHtml = '<ul class="post-list">\n';
-    for (const post of posts) {
-      const dateStr = post.date ? `<span class="date">${post.date}</span>` : "";
-      postsHtml +=
-        `  <li class="post-item"><a href="./${post.url}">${post.title}</a>${dateStr}</li>\n`;
-    }
-    postsHtml += "</ul>";
+  // Create the index.html
+  let postToHtml = (post) => {
+    const dateStr = post.date ? `<span class="date">${post.date}</span>` : "";
+    return `  <li class="post-item"><a href="./${post.url}">${post.title}</a>${dateStr}</li>\n`;
+  };
 
-    const indexHtml = getTemplate({
-      title: siteTitle,
-      content: postsHtml,
-      relativeRoot: "./",
-      siteTitle,
-      isHome: true,
-    });
-
-    fs.writeFileSync(path.join(docsDir, "index.html"), indexHtml, "utf-8");
-    console.log("Regenerated index.html");
+  let postsHtml = '<ul class="post-list">\n';
+  for (const post of posts) {
+    postsHtml += postToHtml(post);
   }
+  postsHtml += "</ul>";
 
-  // 2. Rebuild Feeds
+  const indexHtml = getTemplate({
+    content: postsHtml,
+    relativeRoot: "./",
+    siteTitle,
+    isHome: true,
+  });
+
+  fs.writeFileSync(path.join(docsDir, "index.html"), indexHtml, "utf-8");
+
+  // Rebuild Feeds.
   generateFeeds({ baseURL, siteTitle, docsDir, posts });
 }
 
-/**
- * Handles a single file change (creation, modification, or deletion).
- * @param {string} filePath
- */
-export function handleFileChange(filePath) {
-  const relativePath = path.relative(contentDir, filePath);
-
-  if (relativePath.startsWith("..")) return;
-
-  const isMd = filePath.endsWith(".md");
-
-  if (isMd) {
-    compileFile(filePath);
-
-    const isPost = relativePath.startsWith(`posts${path.sep}`) ||
-      relativePath.startsWith("posts/");
-    if (isPost || relativePath === "index.md") {
-      rebuildMeta();
-    }
-  } else {
-    copyStaticFile(filePath);
+function clearDir(dirPath) {
+  if (fs.existsSync(docsDir)) {
+    fs.rmSync(docsDir, { recursive: true, force: true });
   }
+  fs.mkdirSync(docsDir, { recursive: true });
 }
 
 /**
@@ -273,27 +215,32 @@ export function handleFileChange(filePath) {
 export function build() {
   console.log("Building site...");
 
-  if (fs.existsSync(docsDir)) {
-    fs.rmSync(docsDir, { recursive: true, force: true });
-  }
-  fs.mkdirSync(docsDir, { recursive: true });
-
-  // Copy everything from static/ to docs/
+  clearDir(docsDir);
   copyDir(staticDir, docsDir);
-  console.log("Copied static assets.");
 
   const files = getFilesRecursively(contentDir);
+  const posts = [];
 
   for (const filePath of files) {
-    if (filePath.endsWith(".md")) {
-      compileFile(filePath);
-    } else {
+    if (!filePath.endsWith(".md")) {
       copyStaticFile(filePath);
+      continue;
     }
+    let post = compileFile(filePath);
+
+    if (filePathIsPost(filePath)) posts.push(post);
   }
 
-  // Generate index and feeds
-  rebuildMeta();
+  // Generate index and feeds.
+  buildMeta(posts.map(p => p.metadata));
 
   console.log("Build complete!");
+}
+
+/**
+ * Handles a list of file changes.
+ * @param {Array<{string}>} filePath
+ */
+export function handleChangedFiles(filePaths) {
+  build();
 }

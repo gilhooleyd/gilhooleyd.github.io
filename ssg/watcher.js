@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { contentDir, handleFileChange } from "./build.js";
+import { contentDir, handleChangedFiles } from "./build.js";
 
 /**
  * Recursively watches a directory for changes.
@@ -62,6 +62,14 @@ function watchRecursive(dir, callback) {
   };
 }
 
+function debouncer(timeout) {
+  let debounceTimer;
+  return (fn) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(fn, timeout);
+  }
+}
+
 /**
  * Starts watching the content directory and triggers incremental builds.
  */
@@ -69,21 +77,16 @@ export function startWatcher() {
   console.log(`Watching for changes in ${contentDir}...`);
 
   const changedFiles = new Set();
-  let debounceTimer;
+  // Debounce processing to handle editors that save via temp files
+  let debounceTimer = debouncer(100);
 
   return watchRecursive(contentDir, (eventType, filePath) => {
     if (!filePath) return;
 
-    // Accumulate changes
     changedFiles.add(filePath);
-
-    // Debounce processing to handle editors that save via temp files
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      for (const file of changedFiles) {
-        handleFileChange(file);
-      }
+    debounceTimer(() => {
+      handleChangedFiles(changedFiles);
       changedFiles.clear();
-    }, 100);
+    });
   });
 }
